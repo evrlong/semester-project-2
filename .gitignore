@@ -1,0 +1,27 @@
+# Node / verktøy
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+.pnp/
+.pnp.js
+
+# Byggeutdata (hvis du begynner å bruke disse mappene)
+dist/
+build/
+coverage/
+
+# OS/Editor-støy
+.DS_Store
+Thumbs.db
+
+# VS Code: track bare nyttige filer
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Miljø/hemmeligheter (om du får det senere)
+.env
+.env.*
