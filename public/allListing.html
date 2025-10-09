@@ -3,62 +3,84 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>All listings | Semester Project 2</title>
+    <title>Listings | Auction House</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
-  <body class="page page--listings">
-    <header class="page__header">
-      <div class="page__header-inner">
-        <h1>Browse Listings</h1>
-        <p>Explore every listing currently available on the platform.</p>
+  <body>
+    <header class="site-header">
+      <div class="wrapper site-header__inner">
+        <a class="brand" href="./index.html">Auction House</a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <ul class="site-nav__list">
+            <li><a class="site-nav__link" href="./index.html">Home</a></li>
+            <li>
+              <a
+                class="site-nav__link"
+                href="./allListing.html"
+                aria-current="page"
+                >Listings</a
+              >
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="badge" data-user-credits></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="site-nav__user"
+                >Hi, <strong data-user-name></strong
+              ></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a class="site-nav__link" href="./profile.html" data-profile-link
+                >My profile</a
+              >
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./register.html">Register</a>
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./login.html">Log in</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <button class="site-nav__button" type="button" data-logout>
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
 
-    <nav class="page__nav" aria-label="Main navigation">
-      <ul class="page__nav-list">
-        <li><a href="./index.html">Home</a></li>
-        <li><a href="./login.html">Log in</a></li>
-        <li><a href="./register.html">Register</a></li>
-        <li>
-          <a href="./allListing.html" aria-current="page">All listings</a>
-        </li>
-        <li><a href="./profile.html">Profile</a></li>
-      </ul>
-    </nav>
-
-    <main class="page__main">
-      <section class="card">
-        <header class="card__header">
-          <h2>Search</h2>
-        </header>
-        <form class="form form--filters" data-filter-form>
-          <label class="form__field">
-            <span>Keyword</span>
+    <main class="wrapper stack">
+      <section class="hero-card hero-card--left">
+        <h1>Browse live listings</h1>
+        <p>
+          Search by keyword to find auctions ending soon or items from your
+          favourite sellers.
+        </p>
+        <form class="search-form" data-search-form>
+          <div class="search-form__fields">
             <input type="search" name="query" placeholder="Search listings" />
-          </label>
-          <label class="form__field">
-            <span>Category</span>
-            <select name="category">
-              <option value="">All categories</option>
-              <option value="assignment">Assignments</option>
-              <option value="resource">Resources</option>
-              <option value="event">Events</option>
-            </select>
-          </label>
+            <button type="submit" class="button">Search</button>
+          </div>
         </form>
+        <p class="section__status" data-listings-status hidden></p>
       </section>
 
-      <section class="card">
-        <header class="card__header">
-          <h2>Results</h2>
-          <p class="card__meta"><span data-results-count>0</span> listings</p>
-        </header>
-        <ul class="listing-grid" data-listings></ul>
+      <section class="section">
+        <div class="section__header">
+          <h2>Available listings</h2>
+          <p class="section__status">
+            Showing <span data-results-count>0</span> results
+          </p>
+        </div>
+        <ul class="listing-list" data-listings></ul>
       </section>
     </main>
 
-    <footer class="page__footer">
-      &copy; <span data-year></span> Semester Project 2 Team
+    <footer class="site-footer">
+      <div class="wrapper site-footer__inner">
+        <p>&copy; <span data-year></span> Auction House</p>
+      </div>
     </footer>
 
     <script type="module" src="./assets/js/allListing.js"></script>

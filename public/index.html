@@ -3,68 +3,93 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Semester Project 2</title>
+    <title>Auction House | Semester Project 2</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
-  <body class="page page--landing">
-    <header class="page__header">
-      <div class="page__header-inner">
-        <h1>Semester Project 2</h1>
-        <p>
-          An interactive dashboard for tracking course milestones and
-          deliverables.
-        </p>
+  <body>
+    <header class="site-header">
+      <div class="wrapper site-header__inner">
+        <a class="brand" href="./index.html">Auction House</a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <ul class="site-nav__list">
+            <li>
+              <a class="site-nav__link" href="./index.html" aria-current="page"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a class="site-nav__link" href="./allListing.html">Listings</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="badge" data-user-credits></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="site-nav__user"
+                >Hi, <strong data-user-name></strong
+              ></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a class="site-nav__link" href="./profile.html" data-profile-link
+                >My profile</a
+              >
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./register.html">Register</a>
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./login.html">Log in</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <button class="site-nav__button" type="button" data-logout>
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
 
-    <nav class="page__nav" aria-label="Main navigation">
-      <ul class="page__nav-list">
-        <li><a href="./index.html" aria-current="page">Home</a></li>
-        <li><a href="./login.html">Log in</a></li>
-        <li><a href="./register.html">Register</a></li>
-        <li><a href="./allListing.html">All listings</a></li>
-        <li><a href="./profile.html">Profile</a></li>
-      </ul>
-    </nav>
-
-    <main class="page__main">
-      <section class="card">
-        <h2>Project Overview</h2>
-        <p>
-          Semester Project 2 consolidates course milestones into a single
-          dashboard that helps you follow deadlines, track dependencies, and
-          collaborate with teammates in real time.
+    <main class="wrapper stack">
+      <section class="hero-card">
+        <h1 class="page-title">Find your next auction</h1>
+        <p class="page-lede">
+          Search across every listing to discover something new or jump back to
+          your favourite sellers.
         </p>
-        <ul>
-          <li>Visualise milestones on a timeline to understand sequencing.</li>
-          <li>Assign owners and statuses so responsibilities stay clear.</li>
-          <li>Receive reminders before critical deliverables are due.</li>
-        </ul>
+        <form class="search-form" action="./allListing.html" method="get">
+          <div class="search-form__fields">
+            <input type="search" name="query" placeholder="Search listings" />
+            <button type="submit" class="button">Search</button>
+          </div>
+        </form>
+        <div class="topics" aria-label="Popular search topics">
+          <span class="topic-pill">Collars</span>
+          <span class="topic-pill">Portraits</span>
+          <span class="topic-pill">Toys</span>
+          <span class="topic-pill">Accessories</span>
+          <span class="topic-pill">Beds</span>
+        </div>
       </section>
 
-      <section class="card">
-        <h2>Core Features</h2>
-        <ul class="pill-list">
-          <li>Milestone timeline</li>
-          <li>Team assignments</li>
-          <li>Progress tracking</li>
-          <li>Automated reminders</li>
-          <li>Exportable reports</li>
-        </ul>
-      </section>
-
-      <section class="card">
-        <h2>Getting Started</h2>
+      <section class="section">
+        <h2>New to Auction House?</h2>
         <p>
-          Begin by entering your course schedule, then invite teammates so
-          everyone can contribute to the plan. Use the built-in templates to
-          jump-start milestone planning and track submissions all semester long.
+          Register with your Noroff email, list an item in minutes, and keep
+          track of bids from any device.
         </p>
+        <div class="section__actions">
+          <a class="button" href="./register.html">Create an account</a>
+          <a class="button button--outline" href="./allListing.html"
+            >Browse listings</a
+          >
+        </div>
       </section>
     </main>
 
-    <footer class="page__footer">
-      &copy; <span data-year></span> Semester Project 2 Team
+    <footer class="site-footer">
+      <div class="wrapper site-footer__inner">
+        <p>&copy; <span data-year></span> Auction House</p>
+      </div>
     </footer>
 
     <script type="module" src="./assets/js/index.js"></script>
