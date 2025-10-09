@@ -8,10 +8,10 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "**/*.html": [
+    "public/**/*.html": [
       "prettier --write"
     ],
-    "src/**/*.css": [
+    "src/styles/**/*.css": [
       "prettier --write"
     ]
   },
@@ -19,8 +19,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "tailwind:build": "tailwindcss -i ./src/tailwind.css -o ./style.css --minify",
-    "tailwind:watch": "tailwindcss -i ./src/tailwind.css -o ./style.css --watch",
+    "tailwind:build": "npx tailwindcss -i ./src/styles/tailwind.css -o ./public/assets/css/style.css --minify",
+    "tailwind:watch": "npx tailwindcss -i ./src/styles/tailwind.css -o ./public/assets/css/style.css --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky"
@@ -40,8 +40,6 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "eslint": "^9.37.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
     "postcss": "^8.5.6",

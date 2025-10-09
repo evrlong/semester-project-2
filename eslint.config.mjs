@@ -1,8 +1,3 @@
-// eslint.config.js
-import js from "@eslint/js";
-import prettier from "eslint-config-prettier";
-import importPlugin from "eslint-plugin-import";
-
 export default [
   {
     ignores: [
@@ -26,40 +21,23 @@ export default [
         document: "readonly",
         console: "readonly",
         navigator: "readonly",
+        FormData: "readonly",
+        URLSearchParams: "readonly",
         // legg til 'module'/'require' hvis du bruker CommonJS
       },
     },
-    plugins: {
-      import: importPlugin,
-    },
     rules: {
-      ...js.configs.recommended.rules,
-
-      // import-hjelp (kan justeres etter behov)
-      "import/no-unresolved": "off", // slå på hvis du har bundler/alias
-      "import/order": [
-        "warn",
-        {
-          "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            ["parent", "sibling", "index"],
-          ],
-        },
-      ],
       // små forbedringer
+      eqeqeq: ["error", "smart"],
       "no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "no-undef": "error",
+      "no-unreachable": "error",
       "no-constant-binary-expression": "error",
+      "no-unsafe-negation": "error",
       "no-console": "off", // skru til "warn" i prod
     },
   },
-
-  // Skru av alt som kolliderer med Prettier
-  prettier,
 ];

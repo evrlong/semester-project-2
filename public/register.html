@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register | Semester Project 2</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body class="page page--auth">
+    <header class="page__header">
+      <div class="page__header-inner">
+        <h1>Create your account</h1>
+        <p>
+          Join the platform to publish listings and collaborate with your team.
+        </p>
+      </div>
+    </header>
+
+    <nav class="page__nav" aria-label="Main navigation">
+      <ul class="page__nav-list">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./login.html">Log in</a></li>
+        <li><a href="./register.html" aria-current="page">Register</a></li>
+        <li><a href="./allListing.html">All listings</a></li>
+        <li><a href="./profile.html">Profile</a></li>
+      </ul>
+    </nav>
+
+    <main class="page__main">
+      <section class="card card--form">
+        <h2>Start for free</h2>
+        <form class="form" data-register-form>
+          <label class="form__field">
+            <span>Name</span>
+            <input type="text" name="name" autocomplete="name" required />
+          </label>
+          <label class="form__field">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label class="form__field">
+            <span>Password</span>
+            <input
+              type="password"
+              name="password"
+              autocomplete="new-password"
+              required
+            />
+          </label>
+          <button type="submit" class="button">Create account</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="page__footer">
+      &copy; <span data-year></span> Semester Project 2 Team
+    </footer>
+
+    <script type="module" src="./assets/js/register.js"></script>
+  </body>
+</html>
