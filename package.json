@@ -16,7 +16,7 @@
     ]
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "tailwind:build": "npx tailwindcss -i ./src/styles/tailwind.css -o ./public/assets/css/style.css --minify",
