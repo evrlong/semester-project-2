@@ -3,54 +3,85 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Listing details | Semester Project 2</title>
+    <title>Listing details | Auction House</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
-  <body class="page page--listing">
-    <header class="page__header">
-      <div class="page__header-inner">
-        <h1>Listing details</h1>
-        <p>Review everything you need to know about this listing.</p>
+  <body>
+    <header class="site-header">
+      <div class="wrapper site-header__inner">
+        <a class="brand" href="./index.html">Auction House</a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <ul class="site-nav__list">
+            <li><a class="site-nav__link" href="./index.html">Home</a></li>
+            <li>
+              <a class="site-nav__link" href="./allListing.html">Listings</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="badge" data-user-credits></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="site-nav__user"
+                >Hi, <strong data-user-name></strong
+              ></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a
+                class="site-nav__link"
+                href="./profile.html"
+                data-profile-link
+                aria-current="page"
+                >My profile</a
+              >
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./register.html">Register</a>
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./login.html">Log in</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <button class="site-nav__button" type="button" data-logout>
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
 
-    <nav class="page__nav" aria-label="Main navigation">
-      <ul class="page__nav-list">
-        <li><a href="./index.html">Home</a></li>
-        <li><a href="./login.html">Log in</a></li>
-        <li><a href="./register.html">Register</a></li>
-        <li><a href="./allListing.html">All listings</a></li>
-        <li><a href="./profile.html">Profile</a></li>
-      </ul>
-    </nav>
+    <main class="wrapper stack">
+      <section class="hero-card hero-card--listing">
+        <figure class="hero-card__media">
+          <img data-listing-image alt="" hidden />
+        </figure>
+        <div class="hero-card__body">
+          <p class="eyebrow">Listing</p>
+          <h1 data-listing-title>Loading…</h1>
+          <p data-listing-description>Loading description…</p>
+          <div class="listing-card__meta listing-card__meta--stack">
+            <span>Seller: <strong data-listing-seller>Loading…</strong></span>
+            <span>Ends <time data-listing-deadline>Loading…</time></span>
+            <span><strong data-listing-bid-count>0</strong> bids</span>
+          </div>
+          <p class="section__status" data-listing-status hidden></p>
+          <div class="section__actions">
+            <a class="button button--outline" href="./allListing.html"
+              >Back to listings</a
+            >
+          </div>
+        </div>
+      </section>
 
-    <main class="page__main">
-      <article class="card" data-listing-detail>
-        <header class="card__header">
-          <p class="card__meta" data-listing-status>Loading status…</p>
-          <h2 data-listing-title>Loading title…</h2>
-        </header>
-        <p data-listing-description>Loading description…</p>
-
-        <dl class="definition-list">
-          <div>
-            <dt>Owner</dt>
-            <dd data-listing-owner>Loading owner…</dd>
-          </div>
-          <div>
-            <dt>Deadline</dt>
-            <dd data-listing-deadline>Loading deadline…</dd>
-          </div>
-          <div>
-            <dt>Category</dt>
-            <dd data-listing-category>Loading category…</dd>
-          </div>
-        </dl>
-      </article>
+      <section class="section">
+        <h2>Recent bids</h2>
+        <ul class="listing-bids" data-bid-list></ul>
+      </section>
     </main>
 
-    <footer class="page__footer">
-      &copy; <span data-year></span> Semester Project 2 Team
+    <footer class="site-footer">
+      <div class="wrapper site-footer__inner">
+        <p>&copy; <span data-year></span> Auction House</p>
+      </div>
     </footer>
 
     <script type="module" src="./assets/js/listing.js"></script>

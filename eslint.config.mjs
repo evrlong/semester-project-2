@@ -23,6 +23,11 @@ export default [
         navigator: "readonly",
         FormData: "readonly",
         URLSearchParams: "readonly",
+        URL: "readonly",
+        localStorage: "readonly",
+        fetch: "readonly",
+        Headers: "readonly",
+        CustomEvent: "readonly",
         // legg til 'module'/'require' hvis du bruker CommonJS
       },
     },
