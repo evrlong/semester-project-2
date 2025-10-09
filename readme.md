@@ -22,7 +22,7 @@ Configuration files for ESLint, Prettier, Tailwind and Husky live in the reposit
 
 - `npm run tailwind:build` – compile Tailwind to `public/assets/css/style.css`.
 - `npm run tailwind:watch` – watch Tailwind source files during development.
-- `npm run lint` / `npm run lint:fix` – run ESLint on the codebase.
+- `npm test` / `npm run lint` / `npm run lint:fix` – run ESLint on the codebase.
 - `npm run format` / `npm run format:check` – format files with Prettier.
 
 Before committing, Husky runs `lint-staged` to lint and format staged JavaScript, HTML and CSS changes automatically.
