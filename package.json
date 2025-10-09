@@ -1,0 +1,52 @@
+{
+  "name": "semester-project-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.html": [
+      "prettier --write"
+    ],
+    "src/**/*.css": [
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "tailwind:build": "tailwindcss -i ./src/tailwind.css -o ./style.css --minify",
+    "tailwind:watch": "tailwindcss -i ./src/tailwind.css -o ./style.css --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evrlong/semester-project-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/evrlong/semester-project-2/issues"
+  },
+  "homepage": "https://github.com/evrlong/semester-project-2#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "tailwindcss": "^4.1.14"
+  }
+}
