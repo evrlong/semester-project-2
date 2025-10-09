@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Log in | Semester Project 2</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body class="page page--auth">
+    <header class="page__header">
+      <div class="page__header-inner">
+        <h1>Welcome back</h1>
+        <p>Sign in to manage your listings and track your progress.</p>
+      </div>
+    </header>
+
+    <nav class="page__nav" aria-label="Main navigation">
+      <ul class="page__nav-list">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./login.html" aria-current="page">Log in</a></li>
+        <li><a href="./register.html">Register</a></li>
+        <li><a href="./allListing.html">All listings</a></li>
+        <li><a href="./profile.html">Profile</a></li>
+      </ul>
+    </nav>
+
+    <main class="page__main">
+      <section class="card card--form">
+        <h2>Log in to your account</h2>
+        <form class="form" data-auth-form>
+          <label class="form__field">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label class="form__field">
+            <span>Password</span>
+            <input
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+          <button type="submit" class="button">Continue</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="page__footer">
+      &copy; <span data-year></span> Semester Project 2 Team
+    </footer>
+
+    <script type="module" src="./assets/js/login.js"></script>
+  </body>
+</html>

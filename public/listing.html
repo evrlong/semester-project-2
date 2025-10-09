@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Listing details | Semester Project 2</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body class="page page--listing">
+    <header class="page__header">
+      <div class="page__header-inner">
+        <h1>Listing details</h1>
+        <p>Review everything you need to know about this listing.</p>
+      </div>
+    </header>
+
+    <nav class="page__nav" aria-label="Main navigation">
+      <ul class="page__nav-list">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./login.html">Log in</a></li>
+        <li><a href="./register.html">Register</a></li>
+        <li><a href="./allListing.html">All listings</a></li>
+        <li><a href="./profile.html">Profile</a></li>
+      </ul>
+    </nav>
+
+    <main class="page__main">
+      <article class="card" data-listing-detail>
+        <header class="card__header">
+          <p class="card__meta" data-listing-status>Loading status…</p>
+          <h2 data-listing-title>Loading title…</h2>
+        </header>
+        <p data-listing-description>Loading description…</p>
+
+        <dl class="definition-list">
+          <div>
+            <dt>Owner</dt>
+            <dd data-listing-owner>Loading owner…</dd>
+          </div>
+          <div>
+            <dt>Deadline</dt>
+            <dd data-listing-deadline>Loading deadline…</dd>
+          </div>
+          <div>
+            <dt>Category</dt>
+            <dd data-listing-category>Loading category…</dd>
+          </div>
+        </dl>
+      </article>
+    </main>
+
+    <footer class="page__footer">
+      &copy; <span data-year></span> Semester Project 2 Team
+    </footer>
+
+    <script type="module" src="./assets/js/listing.js"></script>
+  </body>
+</html>

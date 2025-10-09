@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>All listings | Semester Project 2</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body class="page page--listings">
+    <header class="page__header">
+      <div class="page__header-inner">
+        <h1>Browse Listings</h1>
+        <p>Explore every listing currently available on the platform.</p>
+      </div>
+    </header>
+
+    <nav class="page__nav" aria-label="Main navigation">
+      <ul class="page__nav-list">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./login.html">Log in</a></li>
+        <li><a href="./register.html">Register</a></li>
+        <li>
+          <a href="./allListing.html" aria-current="page">All listings</a>
+        </li>
+        <li><a href="./profile.html">Profile</a></li>
+      </ul>
+    </nav>
+
+    <main class="page__main">
+      <section class="card">
+        <header class="card__header">
+          <h2>Search</h2>
+        </header>
+        <form class="form form--filters" data-filter-form>
+          <label class="form__field">
+            <span>Keyword</span>
+            <input type="search" name="query" placeholder="Search listings" />
+          </label>
+          <label class="form__field">
+            <span>Category</span>
+            <select name="category">
+              <option value="">All categories</option>
+              <option value="assignment">Assignments</option>
+              <option value="resource">Resources</option>
+              <option value="event">Events</option>
+            </select>
+          </label>
+        </form>
+      </section>
+
+      <section class="card">
+        <header class="card__header">
+          <h2>Results</h2>
+          <p class="card__meta"><span data-results-count>0</span> listings</p>
+        </header>
+        <ul class="listing-grid" data-listings></ul>
+      </section>
+    </main>
+
+    <footer class="page__footer">
+      &copy; <span data-year></span> Semester Project 2 Team
+    </footer>
+
+    <script type="module" src="./assets/js/allListing.js"></script>
+  </body>
+</html>

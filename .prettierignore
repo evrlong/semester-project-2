@@ -3,3 +3,4 @@ dist
 build
 coverage
 *.log
+public/assets/css/style.css

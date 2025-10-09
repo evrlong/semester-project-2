@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile | Semester Project 2</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body class="page page--profile">
+    <header class="page__header">
+      <div class="page__header-inner">
+        <h1>Your profile</h1>
+        <p>Manage your personal information and account preferences.</p>
+      </div>
+    </header>
+
+    <nav class="page__nav" aria-label="Main navigation">
+      <ul class="page__nav-list">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./login.html">Log in</a></li>
+        <li><a href="./register.html">Register</a></li>
+        <li><a href="./allListing.html">All listings</a></li>
+        <li><a href="./profile.html" aria-current="page">Profile</a></li>
+      </ul>
+    </nav>
+
+    <main class="page__main">
+      <section class="card" data-profile-summary>
+        <header class="card__header">
+          <h2>Profile summary</h2>
+        </header>
+        <dl class="definition-list">
+          <div>
+            <dt>Name</dt>
+            <dd data-profile-name>Loading…</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd data-profile-email>Loading…</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card" data-profile-stats>
+        <header class="card__header">
+          <h2>Activity</h2>
+        </header>
+        <ul class="pill-list">
+          <li><span data-profile-active>0</span> active listings</li>
+          <li><span data-profile-completed>0</span> completed listings</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="page__footer">
+      &copy; <span data-year></span> Semester Project 2 Team
+    </footer>
+
+    <script type="module" src="./assets/js/profile.js"></script>
+  </body>
+</html>
