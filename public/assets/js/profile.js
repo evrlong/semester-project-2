@@ -26,6 +26,24 @@ const params = new URLSearchParams(window.location.search);
 const auth = getStoredAuth();
 const profileName = params.get("name") || auth?.name || "";
 
+const listingCardClass =
+  "flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
+const listingCardMediaClass =
+  "aspect-[4/3] overflow-hidden rounded-xl bg-slate-100";
+const listingCardBodyClass = "flex flex-col gap-3";
+const listingCardTitleClass = "m-0 text-lg font-semibold text-slate-900";
+const listingCardLinkClass =
+  "text-slate-900 no-underline transition hover:text-indigo-600 hover:underline";
+const listingCardDescriptionClass = "m-0 text-base text-slate-600";
+const listingCardMetaClass = "flex flex-wrap gap-3 text-sm text-slate-500";
+const emptyListingCardClass = `${listingCardClass} text-center text-sm text-slate-500`;
+const profileStatusBaseClass = "text-sm";
+const profileStatusToneClasses = {
+  info: "text-slate-600",
+  warning: "text-amber-600",
+  error: "text-red-600",
+};
+
 const setStatus = (message, tone = "info") => {
   if (!statusElement) {
     return;
@@ -34,12 +52,13 @@ const setStatus = (message, tone = "info") => {
   statusElement.textContent = message;
   if (!message) {
     statusElement.hidden = true;
-    delete statusElement.dataset.tone;
+    statusElement.className = `${profileStatusBaseClass} ${profileStatusToneClasses.info}`;
     return;
   }
 
   statusElement.hidden = false;
-  statusElement.dataset.tone = tone;
+  const toneKey = tone && profileStatusToneClasses[tone] ? tone : "info";
+  statusElement.className = `${profileStatusBaseClass} ${profileStatusToneClasses[toneKey]}`;
 };
 
 const assignText = (elements, value) => {
@@ -63,12 +82,12 @@ const assignText = (elements, value) => {
 
 const createListingItem = (listing) => {
   const item = document.createElement("li");
-  item.className = "listing-card";
+  item.className = listingCardClass;
 
   const media = listing.media?.[0];
   if (media?.url) {
     const figure = document.createElement("figure");
-    figure.className = "listing-card__media";
+    figure.className = listingCardMediaClass;
 
     const image = document.createElement("img");
     image.src = media.url;
@@ -79,20 +98,20 @@ const createListingItem = (listing) => {
   }
 
   const content = document.createElement("div");
-  content.className = "listing-card__body";
+  content.className = listingCardBodyClass;
 
   const title = document.createElement("h3");
-  title.className = "listing-card__title";
-  title.innerHTML = `<a href="./listing.html?id=${encodeURIComponent(listing.id)}">${listing.title}</a>`;
+  title.className = listingCardTitleClass;
+  title.innerHTML = `<a class="${listingCardLinkClass}" href="./listing.html?id=${encodeURIComponent(listing.id)}">${listing.title}</a>`;
   content.append(title);
 
   const description = document.createElement("p");
-  description.className = "listing-card__description";
+  description.className = listingCardDescriptionClass;
   description.textContent = listing.description || "No description provided.";
   content.append(description);
 
   const meta = document.createElement("div");
-  meta.className = "listing-card__meta";
+  meta.className = listingCardMetaClass;
   const bidCount = listing._count?.bids ?? listing.bids?.length ?? 0;
   meta.innerHTML = `
     <span>Ends ${formatDate(listing.endsAt)}</span>
@@ -114,7 +133,7 @@ const renderCollection = (container, items, emptyMessage) => {
 
   if (!items || !items.length) {
     const empty = document.createElement("li");
-    empty.className = "listing-card listing-card--empty";
+    empty.className = emptyListingCardClass;
     empty.textContent = emptyMessage;
     container.append(empty);
     return;

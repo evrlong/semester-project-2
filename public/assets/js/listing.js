@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-import { getListing } from "./shared/api.js";
+import { createBid, getListing, getStoredAuth } from "./shared/api.js";
 import { fallbackListings } from "./shared/data.js";
 import { formatDate, initPageChrome } from "./shared/page.js";
 
@@ -13,12 +13,60 @@ const descriptionElements = document.querySelectorAll(
 const sellerElements = document.querySelectorAll("[data-listing-seller]");
 const deadlineElements = document.querySelectorAll("[data-listing-deadline]");
 const bidCountElements = document.querySelectorAll("[data-listing-bid-count]");
+const highestBidElements = document.querySelectorAll(
+  "[data-listing-highest-bid]",
+);
+const nextMinimumElements = document.querySelectorAll(
+  "[data-listing-next-minimum]",
+);
 const statusElement = document.querySelector("[data-listing-status]");
 const imageElement = document.querySelector("[data-listing-image]");
 const bidsContainer = document.querySelector("[data-bid-list]");
+const bidForm = document.querySelector("[data-bid-form]");
+const bidAmountInput = document.querySelector("[data-bid-amount]");
+const bidSubmitButton =
+  bidForm?.querySelector("[data-bid-submit]") ||
+  bidForm?.querySelector('button[type="submit"]');
+const bidStatus = document.querySelector("[data-bid-status]");
+const bidNotice = document.querySelector("[data-bid-notice]");
 
 const params = new URLSearchParams(window.location.search);
 const listingId = params.get("id");
+
+let currentListing;
+
+const numberFormatter = new Intl.NumberFormat();
+
+const formatCredits = (value) => `${numberFormatter.format(value)} credits`;
+
+const formStatusClasses = {
+  info: "mt-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600",
+  error:
+    "mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700",
+  success:
+    "mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700",
+};
+
+const listingStatusBaseClass = "text-sm";
+const listingStatusToneClasses = {
+  info: "text-slate-600",
+  warning: "text-amber-600",
+  error: "text-red-600",
+};
+
+const bidNoticeClasses = {
+  info: "mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600",
+  warning:
+    "mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700",
+  error:
+    "mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700",
+  success:
+    "mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700",
+};
+
+const listingBidClass =
+  "flex flex-wrap justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700";
+const listingBidEmptyClass = `${listingBidClass} justify-center text-slate-500`;
 
 const setStatus = (message, tone = "info") => {
   if (!statusElement) {
@@ -28,12 +76,13 @@ const setStatus = (message, tone = "info") => {
   statusElement.textContent = message;
   if (!message) {
     statusElement.hidden = true;
-    delete statusElement.dataset.tone;
+    statusElement.className = `${listingStatusBaseClass} ${listingStatusToneClasses.info}`;
     return;
   }
 
   statusElement.hidden = false;
-  statusElement.dataset.tone = tone;
+  const toneKey = tone && listingStatusToneClasses[tone] ? tone : "info";
+  statusElement.className = `${listingStatusBaseClass} ${listingStatusToneClasses[toneKey]}`;
 };
 
 const assignTextContent = (elements, value) => {
@@ -55,6 +104,152 @@ const assignTextContent = (elements, value) => {
   }
 };
 
+const getHighestBidAmount = (listing) => {
+  if (!listing?.bids?.length) {
+    return 0;
+  }
+
+  return listing.bids.reduce((max, bid) => {
+    const amount = Number(bid.amount);
+    if (!Number.isFinite(amount)) {
+      return max;
+    }
+    return amount > max ? amount : max;
+  }, 0);
+};
+
+const getNextMinimumBidAmount = (listing) => {
+  const highest = getHighestBidAmount(listing);
+  return highest > 0 ? highest + 1 : 1;
+};
+
+const setBidNotice = (message, tone = "info") => {
+  if (!bidNotice) {
+    return;
+  }
+
+  if (!message) {
+    bidNotice.hidden = true;
+    bidNotice.textContent = "";
+    bidNotice.className = bidNoticeClasses.info;
+    return;
+  }
+
+  bidNotice.hidden = false;
+  bidNotice.textContent = message;
+  const toneKey = tone && bidNoticeClasses[tone] ? tone : "info";
+  bidNotice.className = bidNoticeClasses[toneKey];
+};
+
+const setBidStatus = (message, tone = "info") => {
+  if (!bidStatus) {
+    return;
+  }
+
+  if (!message) {
+    bidStatus.hidden = true;
+    bidStatus.textContent = "";
+    bidStatus.className = formStatusClasses.info;
+    delete bidStatus.dataset.tone;
+    return;
+  }
+
+  bidStatus.hidden = false;
+  bidStatus.textContent = message;
+  const toneKey = tone && formStatusClasses[tone] ? tone : "info";
+  bidStatus.className = formStatusClasses[toneKey];
+  bidStatus.dataset.tone = toneKey;
+};
+
+const isListingClosed = (listing) => {
+  if (!listing?.endsAt) {
+    return false;
+  }
+
+  const ends = new Date(listing.endsAt);
+  if (Number.isNaN(ends.getTime())) {
+    return false;
+  }
+
+  return ends.getTime() <= Date.now();
+};
+
+const updateBidSummary = () => {
+  const highest = getHighestBidAmount(currentListing);
+  assignTextContent(
+    highestBidElements,
+    highest > 0 ? formatCredits(highest) : "No bids yet",
+  );
+
+  const nextMinimum = getNextMinimumBidAmount(currentListing);
+  assignTextContent(nextMinimumElements, numberFormatter.format(nextMinimum));
+
+  if (bidAmountInput) {
+    const minimum = Math.max(1, nextMinimum);
+    bidAmountInput.min = String(minimum);
+    bidAmountInput.setAttribute("min", String(minimum));
+    if (!bidAmountInput.value) {
+      bidAmountInput.placeholder = numberFormatter.format(minimum);
+    }
+  }
+};
+
+const updateBidFormAvailability = () => {
+  if (!bidForm) {
+    return;
+  }
+
+  const auth = getStoredAuth();
+  const signedIn = Boolean(auth?.accessToken);
+  const sellerName = currentListing?.seller?.name;
+  const authName = typeof auth?.name === "string" ? auth.name : "";
+  const isSeller =
+    signedIn &&
+    sellerName &&
+    authName.toLowerCase() === sellerName.toLowerCase();
+  const closed = isListingClosed(currentListing);
+  const listingAvailable =
+    Boolean(listingId) &&
+    Boolean(currentListing?.id) &&
+    currentListing.id === listingId;
+
+  let message = "";
+  let tone = "info";
+
+  if (!listingId) {
+    message = "We couldn't find this listing, so bidding is unavailable.";
+    tone = "warning";
+  } else if (!listingAvailable) {
+    message = "Bidding is disabled while we show an example listing.";
+    tone = "warning";
+  } else if (!signedIn) {
+    message = "Log in to place a bid.";
+  } else if (isSeller) {
+    message = "You cannot bid on your own listing.";
+    tone = "warning";
+  } else if (closed) {
+    message = "This auction has ended. Bidding is closed.";
+    tone = "warning";
+  }
+
+  const allow =
+    !message && signedIn && listingAvailable && !isSeller && !closed;
+
+  if (bidAmountInput) {
+    bidAmountInput.disabled = !allow;
+  }
+
+  if (bidSubmitButton) {
+    bidSubmitButton.disabled = !allow;
+  }
+
+  setBidNotice(message, tone);
+
+  if (!allow) {
+    setBidStatus("");
+  }
+};
+
 const renderBids = (bids = []) => {
   if (!bidsContainer) {
     return;
@@ -64,7 +259,7 @@ const renderBids = (bids = []) => {
 
   if (!bids.length) {
     const empty = document.createElement("li");
-    empty.className = "listing-bid listing-bid--empty";
+    empty.className = listingBidEmptyClass;
     empty.textContent = "No bids yet. Be the first to place one!";
     bidsContainer.append(empty);
     return;
@@ -76,12 +271,13 @@ const renderBids = (bids = []) => {
     .sort((a, b) => Number(b.amount) - Number(a.amount))
     .forEach((bid) => {
       const item = document.createElement("li");
-      item.className = "listing-bid";
+      item.className = listingBidClass;
       const bidder = bid.bidder?.name || "Anonymous";
+      const created = bid.created ? new Date(bid.created).toISOString() : "";
       item.innerHTML = `
         <span>${bidder}</span>
-        <strong>${new Intl.NumberFormat().format(bid.amount)} credits</strong>
-        <time datetime="${bid.created}">${formatDate(bid.created)}</time>
+        <strong>${formatCredits(Number(bid.amount) || 0)}</strong>
+        <time datetime="${created}">${formatDate(bid.created)}</time>
       `;
       fragment.append(item);
     });
@@ -93,6 +289,8 @@ const hydrateListing = (listing, { updateTitle = true } = {}) => {
   if (!listing) {
     return;
   }
+
+  currentListing = listing;
 
   assignTextContent(titleElements, listing.title);
   if (listing.title && updateTitle) {
@@ -132,7 +330,7 @@ const hydrateListing = (listing, { updateTitle = true } = {}) => {
   }
 
   const bids = listing._count?.bids ?? listing.bids?.length ?? 0;
-  assignTextContent(bidCountElements, new Intl.NumberFormat().format(bids));
+  assignTextContent(bidCountElements, numberFormatter.format(bids));
 
   if (imageElement) {
     const media = listing.media?.[0];
@@ -148,9 +346,12 @@ const hydrateListing = (listing, { updateTitle = true } = {}) => {
   }
 
   renderBids(listing.bids || []);
+  updateBidSummary();
+  updateBidFormAvailability();
+  setBidStatus("");
 };
 
-const loadListing = async () => {
+const loadListing = async ({ silent = false } = {}) => {
   if (!listingId) {
     setStatus(
       "We couldn't find that listing. Showing an example instead.",
@@ -160,7 +361,9 @@ const loadListing = async () => {
     return;
   }
 
-  setStatus("Loading listing details…", "info");
+  if (!silent) {
+    setStatus("Loading listing details…", "info");
+  }
 
   try {
     const response = await getListing(listingId, {
@@ -187,9 +390,84 @@ const loadListing = async () => {
   }
 };
 
+const handleAuthChanged = () => {
+  updateBidFormAvailability();
+};
+
+window.addEventListener("auth:changed", handleAuthChanged);
+
+if (bidForm) {
+  bidForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (bidForm.dataset.submitting === "true") {
+      return;
+    }
+
+    if (!listingId || !currentListing || currentListing.id !== listingId) {
+      setBidStatus(
+        "Bidding is unavailable right now. Please refresh and try again.",
+        "error",
+      );
+      return;
+    }
+
+    const formData = new FormData(bidForm);
+    const rawAmount = Number(formData.get("amount"));
+
+    if (!Number.isFinite(rawAmount) || rawAmount <= 0) {
+      setBidStatus("Enter a valid bid amount in credits.", "error");
+      return;
+    }
+
+    const amount = Math.floor(rawAmount);
+    const minimum = getNextMinimumBidAmount(currentListing);
+
+    if (amount < minimum) {
+      setBidStatus(
+        `Your bid must be at least ${formatCredits(minimum)}.`,
+        "error",
+      );
+      return;
+    }
+
+    try {
+      bidForm.dataset.submitting = "true";
+      setBidStatus("Placing your bid…", "info");
+
+      await createBid(listingId, { amount });
+
+      setBidStatus("Bid placed! Good luck.", "success");
+      bidForm.reset();
+      await loadListing({ silent: true });
+    } catch (error) {
+      console.error(error);
+      setBidStatus(
+        error.message ||
+          "We couldn't place your bid right now. Please try again.",
+        "error",
+      );
+    } finally {
+      delete bidForm.dataset.submitting;
+      updateBidSummary();
+      updateBidFormAvailability();
+    }
+  });
+}
+
+const handleBidInput = () => {
+  if (bidStatus && bidStatus.dataset.tone === "error") {
+    setBidStatus("");
+  }
+};
+
+bidAmountInput?.addEventListener("input", handleBidInput);
+
 loadListing();
 
 window.addEventListener("unload", () => {
+  window.removeEventListener("auth:changed", handleAuthChanged);
+  bidAmountInput?.removeEventListener("input", handleBidInput);
   if (typeof teardown === "function") {
     teardown();
   }
