@@ -51,6 +51,12 @@
           <ul
             class="m-0 flex list-none flex-col gap-3 p-0 md:flex-row md:items-center md:gap-3"
           >
+            <li data-auth="signed-in" hidden>
+              <span
+                class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700"
+                data-user-credits
+              ></span>
+            </li>
             <li>
               <a
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
@@ -66,17 +72,7 @@
                 >Listings</a
               >
             </li>
-            <li data-auth="signed-in" hidden>
-              <span
-                class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700"
-                data-user-credits
-              ></span>
-            </li>
-            <li data-auth="signed-in" hidden>
-              <span class="text-xs uppercase tracking-[0.3em] text-slate-500"
-                >Hi, <strong data-user-name></strong
-              ></span>
-            </li>
+
             <li data-auth="signed-in" hidden>
               <a
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
