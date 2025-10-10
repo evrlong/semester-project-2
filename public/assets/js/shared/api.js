@@ -180,6 +180,13 @@ export const getListing = (id, params) =>
     requireAuth: false,
   });
 
+export const createBid = (id, payload) =>
+  request(`/auction/listings/${encodeURIComponent(id)}/bids`, {
+    method: "POST",
+    body: payload,
+    requireAuth: true,
+  });
+
 export const getProfile = (name, params) =>
   request(`/auction/profiles/${encodeURIComponent(name)}${buildQuery(params)}`);
 

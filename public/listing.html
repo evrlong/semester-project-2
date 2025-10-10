@@ -62,6 +62,10 @@
             <span>Seller: <strong data-listing-seller>Loading…</strong></span>
             <span>Ends <time data-listing-deadline>Loading…</time></span>
             <span><strong data-listing-bid-count>0</strong> bids</span>
+            <span>
+              Highest bid:
+              <strong data-listing-highest-bid>Checking…</strong>
+            </span>
           </div>
           <p class="section__status" data-listing-status hidden></p>
           <div class="section__actions">
@@ -70,6 +74,55 @@
             >
           </div>
         </div>
+      </section>
+
+      <section class="section">
+        <div class="section__header">
+          <h2>Place a bid</h2>
+          <p class="section__status">
+            Next minimum: <strong data-listing-next-minimum>1</strong> credits
+          </p>
+        </div>
+        <div class="bid-summary">
+          <div class="bid-summary__meta">
+            <span>
+              Highest bid:
+              <strong data-listing-highest-bid>Checking…</strong>
+            </span>
+            <span>
+              Minimum bid:
+              <strong data-listing-next-minimum>1</strong> credits
+            </span>
+          </div>
+        </div>
+        <p class="bid-notice" data-bid-notice hidden></p>
+        <form class="bid-form" data-bid-form novalidate>
+          <div class="bid-form__fields">
+            <label class="bid-form__field">
+              <span>Bid amount (credits)</span>
+              <input
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                type="number"
+                name="amount"
+                min="1"
+                step="1"
+                inputmode="numeric"
+                autocomplete="off"
+                data-bid-amount
+                required
+              />
+            </label>
+            <button class="button" type="submit" data-bid-submit>
+              Place bid
+            </button>
+          </div>
+          <p class="bid-form__help">
+            Enter at least
+            <strong data-listing-next-minimum>1</strong>
+            credits.
+          </p>
+          <p class="form__status" data-bid-status hidden></p>
+        </form>
       </section>
 
       <section class="section">
