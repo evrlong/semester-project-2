@@ -9,6 +9,10 @@ export const fallbackListings = [
         url: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80",
         alt: "Cat portrait",
       },
+      {
+        url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80",
+        alt: "Cat looking up",
+      },
     ],
     endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString(),
     bids: [{ amount: 48 }, { amount: 72 }],
@@ -24,6 +28,10 @@ export const fallbackListings = [
       {
         url: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=800&q=80",
         alt: "Brass collar",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80",
+        alt: "Dog wearing a collar",
       },
     ],
     endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
