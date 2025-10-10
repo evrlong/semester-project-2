@@ -34,6 +34,7 @@ const bidSubmitButton =
   bidForm?.querySelector('button[type="submit"]');
 const bidStatus = document.querySelector("[data-bid-status]");
 const bidNotice = document.querySelector("[data-bid-notice]");
+const editButton = document.querySelector("[data-edit-listing]");
 
 const params = new URLSearchParams(window.location.search);
 const listingId = params.get("id");
@@ -107,6 +108,27 @@ const assignTextContent = (elements, value) => {
   if (elements) {
     elements.textContent = text;
   }
+};
+
+const updateEditButton = (listing) => {
+  if (!editButton) {
+    return;
+  }
+
+  const auth = getStoredAuth();
+  const canEdit =
+    Boolean(auth?.name) && listing?.seller?.name === auth.name && listing?.id;
+
+  if (!canEdit) {
+    editButton.hidden = true;
+    editButton.removeAttribute("href");
+    return;
+  }
+
+  const url = new URL("./editListing.html", window.location.href);
+  url.searchParams.set("id", listing.id);
+  editButton.href = `${url.pathname}${url.search}`;
+  editButton.hidden = false;
 };
 
 const getHighestBidAmount = (listing) => {
@@ -297,6 +319,8 @@ const hydrateListing = (listing, { updateTitle = true } = {}) => {
 
   currentListing = listing;
 
+  updateEditButton(listing);
+
   assignTextContent(titleElements, listing.title);
   if (listing.title && updateTitle) {
     document.title = `${listing.title} | Auction House`;
@@ -397,6 +421,9 @@ const loadListing = async ({ silent = false } = {}) => {
 
 const handleAuthChanged = () => {
   updateBidFormAvailability();
+  if (currentListing) {
+    updateEditButton(currentListing);
+  }
 };
 
 window.addEventListener("auth:changed", handleAuthChanged);

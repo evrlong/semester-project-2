@@ -76,6 +76,13 @@
             <li data-auth="signed-in" hidden>
               <a
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                href="./createListing.html"
+                >Create listing</a
+              >
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 href="./profile.html"
                 data-profile-link
                 >My profile</a
@@ -145,12 +152,19 @@
         class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
       >
         <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <h2 class="text-xl font-semibold text-slate-900">
-            Available listings
-          </h2>
-          <p class="text-sm text-slate-600">
-            Showing <span data-results-count>0</span> results
-          </p>
+          <div class="flex flex-col gap-1">
+            <h2 class="text-xl font-semibold text-slate-900">
+              Available listings
+            </h2>
+            <p class="text-sm text-slate-600">
+              Showing <span data-results-count>0</span> results
+            </p>
+          </div>
+          <a
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+            href="./createListing.html"
+            >Create listing</a
+          >
         </div>
         <ul
           class="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3"
