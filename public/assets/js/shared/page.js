@@ -21,7 +21,7 @@ const updateProfileLinks = (auth) => {
 
   profileLinks.forEach((link) => {
     const href = link.getAttribute("href") || "./profile.html";
-    const url = new URL(href, window.location.origin);
+    const url = new URL(href, window.location.href);
 
     if (auth?.name) {
       url.searchParams.set("name", auth.name);
@@ -87,10 +87,95 @@ const bindLogoutButtons = () => {
   };
 };
 
+const bindNavigationToggle = () => {
+  const toggles = Array.from(document.querySelectorAll("[data-nav-toggle]"));
+  const navigation = document.querySelector("[data-nav]");
+
+  if (!navigation || !toggles.length) {
+    return () => {};
+  }
+
+  const mediaQuery = window.matchMedia("(min-width: 768px)");
+  let expanded = false;
+
+  const updateVisibility = () => {
+    if (mediaQuery.matches || expanded) {
+      navigation.classList.remove("hidden");
+    } else {
+      navigation.classList.add("hidden");
+    }
+  };
+
+  const setExpanded = (value) => {
+    expanded = Boolean(value);
+    toggles.forEach((toggle) =>
+      toggle.setAttribute("aria-expanded", expanded ? "true" : "false"),
+    );
+    updateVisibility();
+  };
+
+  const handleToggleClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleMediaChange = () => {
+    if (mediaQuery.matches) {
+      setExpanded(false);
+    } else {
+      updateVisibility();
+    }
+  };
+
+  const addMediaListener = () => {
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleMediaChange);
+    } else if (typeof mediaQuery.addListener === "function") {
+      mediaQuery.addListener(handleMediaChange);
+    }
+  };
+
+  const removeMediaListener = () => {
+    if (typeof mediaQuery.removeEventListener === "function") {
+      mediaQuery.removeEventListener("change", handleMediaChange);
+    } else if (typeof mediaQuery.removeListener === "function") {
+      mediaQuery.removeListener(handleMediaChange);
+    }
+  };
+
+  const handleNavigationClick = (event) => {
+    if (mediaQuery.matches || !expanded) {
+      return;
+    }
+
+    const trigger = event.target.closest("a, button");
+    if (trigger) {
+      setExpanded(false);
+    }
+  };
+
+  toggles.forEach((toggle) =>
+    toggle.addEventListener("click", handleToggleClick),
+  );
+  addMediaListener();
+  navigation.addEventListener("click", handleNavigationClick);
+
+  setExpanded(false);
+  updateVisibility();
+
+  return () => {
+    toggles.forEach((toggle) =>
+      toggle.removeEventListener("click", handleToggleClick),
+    );
+    removeMediaListener();
+    navigation.removeEventListener("click", handleNavigationClick);
+  };
+};
+
 export const initPageChrome = () => {
   updateCurrentYear();
   updateAuthUI();
   const unbindLogout = bindLogoutButtons();
+  const unbindNavigation = bindNavigationToggle();
 
   const handleAuthChanged = () => {
     updateAuthUI();
@@ -101,6 +186,7 @@ export const initPageChrome = () => {
   return () => {
     window.removeEventListener("auth:changed", handleAuthChanged);
     unbindLogout();
+    unbindNavigation();
   };
 };
 

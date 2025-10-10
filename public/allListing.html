@@ -10,15 +10,47 @@
   <body>
     <header class="w-full border-b border-slate-200 bg-white/80 backdrop-blur">
       <div
-        class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4"
+        class="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between"
       >
-        <a
-          class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-600"
-          href="./index.html"
-          >Auction House</a
+        <div class="flex w-full items-center justify-between gap-4 md:w-auto">
+          <a
+            class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-600"
+            href="./index.html"
+            >Auction House</a
+          >
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 md:hidden"
+            type="button"
+            data-nav-toggle
+            aria-expanded="false"
+            aria-controls="primary-navigation"
+          >
+            <span class="sr-only">Toggle navigation</span>
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+        <nav
+          id="primary-navigation"
+          data-nav
+          aria-label="Main navigation"
+          class="hidden w-full flex-col gap-3 md:flex md:w-auto md:flex-row md:items-center md:gap-3"
         >
-        <nav aria-label="Main navigation">
-          <ul class="m-0 flex list-none flex-wrap items-center gap-3 p-0">
+          <ul
+            class="m-0 flex list-none flex-col gap-3 p-0 md:flex-row md:items-center md:gap-3"
+          >
             <li>
               <a
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
@@ -124,7 +156,10 @@
             Showing <span data-results-count>0</span> results
           </p>
         </div>
-        <ul class="grid list-none gap-4 p-0" data-listings></ul>
+        <ul
+          class="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3"
+          data-listings
+        ></ul>
         <nav
           class="mt-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600"
           data-pagination
