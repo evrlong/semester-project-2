@@ -80,7 +80,7 @@ const assignText = (elements, value) => {
   }
 };
 
-const createListingItem = (listing) => {
+const createListingItem = (listing, { canEdit = false } = {}) => {
   const item = document.createElement("li");
   item.className = listingCardClass;
 
@@ -119,12 +119,28 @@ const createListingItem = (listing) => {
   `;
   content.append(meta);
 
+  if (canEdit && listing?.id) {
+    const actions = document.createElement("div");
+    actions.className = "flex flex-wrap gap-2";
+
+    const editLink = document.createElement("a");
+    editLink.className =
+      "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+    const url = new URL("./editListing.html", window.location.href);
+    url.searchParams.set("id", listing.id);
+    editLink.href = `${url.pathname}${url.search}`;
+    editLink.textContent = "Edit listing";
+    actions.append(editLink);
+
+    content.append(actions);
+  }
+
   item.append(content);
 
   return item;
 };
 
-const renderCollection = (container, items, emptyMessage) => {
+const renderCollection = (container, items, emptyMessage, options = {}) => {
   if (!container) {
     return;
   }
@@ -140,7 +156,7 @@ const renderCollection = (container, items, emptyMessage) => {
   }
 
   const fragment = document.createDocumentFragment();
-  items.forEach((item) => fragment.append(createListingItem(item)));
+  items.forEach((item) => fragment.append(createListingItem(item, options)));
   container.append(fragment);
 };
 
@@ -167,10 +183,17 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
   renderCount(listingCountElements, listingCount);
   renderCount(winCountElements, winCount);
 
+  const currentAuth = getStoredAuth();
+  const isOwnProfile =
+    Boolean(profile?.name) && Boolean(currentAuth?.name)
+      ? currentAuth.name === profile.name
+      : false;
+
   renderCollection(
     listingsContainer,
     profile.listings,
     "No active listings yet.",
+    { canEdit: isOwnProfile },
   );
   renderCollection(winsContainer, profile.wins, "No wins yet.");
 

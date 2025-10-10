@@ -184,6 +184,26 @@ export const getListing = (id, params) =>
     requireAuth: false,
   });
 
+export const createListing = (payload) =>
+  request("/auction/listings", {
+    method: "POST",
+    body: payload,
+    requireAuth: true,
+  });
+
+export const updateListing = (id, payload) =>
+  request(`/auction/listings/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    body: payload,
+    requireAuth: true,
+  });
+
+export const deleteListing = (id) =>
+  request(`/auction/listings/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    requireAuth: true,
+  });
+
 export const createBid = (id, payload) =>
   request(`/auction/listings/${encodeURIComponent(id)}/bids`, {
     method: "POST",
