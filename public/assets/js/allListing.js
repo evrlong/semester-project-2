@@ -35,6 +35,25 @@ const state = {
   page: initialPage,
 };
 
+const listingCardClass =
+  "flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
+const listingCardHeaderClass = "flex flex-col gap-1";
+const listingCardTitleClass = "m-0 text-lg font-semibold text-slate-900";
+const listingCardLinkClass =
+  "text-slate-900 no-underline transition hover:text-indigo-600 hover:underline";
+const listingCardSellerClass = "m-0 text-sm text-slate-500";
+const listingCardDescriptionClass = "m-0 text-base text-slate-600";
+const listingCardMetaClass = "flex flex-wrap gap-3 text-sm text-slate-500";
+const listingCardMediaClass =
+  "aspect-[4/3] overflow-hidden rounded-xl bg-slate-100";
+const emptyListingCardClass = `${listingCardClass} text-center text-sm text-slate-500`;
+const listingStatusBaseClass = "mt-4 text-sm";
+const listingStatusToneClasses = {
+  info: "text-slate-600",
+  warning: "text-amber-600",
+  error: "text-red-600",
+};
+
 const updateSearchField = () => {
   if (!searchForm) {
     return;
@@ -71,12 +90,13 @@ const setStatus = (message, tone = "info") => {
   statusElement.textContent = message;
   if (!message) {
     statusElement.hidden = true;
-    delete statusElement.dataset.tone;
+    statusElement.className = `${listingStatusBaseClass} ${listingStatusToneClasses.info}`;
     return;
   }
 
   statusElement.hidden = false;
-  statusElement.dataset.tone = tone;
+  const toneKey = tone && listingStatusToneClasses[tone] ? tone : "info";
+  statusElement.className = `${listingStatusBaseClass} ${listingStatusToneClasses[toneKey]}`;
 };
 
 const updatePagination = (meta, itemsLength) => {
@@ -126,21 +146,21 @@ const updatePagination = (meta, itemsLength) => {
 
 const createListingCard = (listing) => {
   const listItem = document.createElement("li");
-  listItem.className = "listing-card";
+  listItem.className = listingCardClass;
 
   const media = listing.media?.[0];
   const bids = listing._count?.bids ?? 0;
   const sellerName = listing.seller?.name || "Unknown seller";
 
   listItem.innerHTML = `
-    <div class="listing-card__header">
-      <h3 class="listing-card__title">
-        <a href="./listing.html?id=${encodeURIComponent(listing.id)}">${listing.title}</a>
+    <div class="${listingCardHeaderClass}">
+      <h3 class="${listingCardTitleClass}">
+        <a class="${listingCardLinkClass}" href="./listing.html?id=${encodeURIComponent(listing.id)}">${listing.title}</a>
       </h3>
-      <p class="listing-card__seller">${sellerName}</p>
+      <p class="${listingCardSellerClass}">${sellerName}</p>
     </div>
-    <p class="listing-card__description">${listing.description || "No description provided."}</p>
-    <div class="listing-card__meta">
+    <p class="${listingCardDescriptionClass}">${listing.description || "No description provided."}</p>
+    <div class="${listingCardMetaClass}">
       <span><strong>${numberFormatter.format(bids)}</strong> bids</span>
       <span>Ends ${formatDate(listing.endsAt)}</span>
     </div>
@@ -148,7 +168,7 @@ const createListingCard = (listing) => {
 
   if (media?.url) {
     const figure = document.createElement("figure");
-    figure.className = "listing-card__media";
+    figure.className = listingCardMediaClass;
 
     const image = document.createElement("img");
     image.src = media.url;
@@ -170,7 +190,7 @@ const renderListings = (items, meta) => {
 
   if (!items.length) {
     const emptyItem = document.createElement("li");
-    emptyItem.className = "listing-card listing-card--empty";
+    emptyItem.className = emptyListingCardClass;
     emptyItem.textContent = "No listings found. Try a different search.";
     listElement.append(emptyItem);
     renderCount(resultsCount, meta?.total ?? 0);

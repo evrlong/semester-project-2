@@ -39,6 +39,35 @@ const numberFormatter = new Intl.NumberFormat();
 
 const formatCredits = (value) => `${numberFormatter.format(value)} credits`;
 
+const formStatusClasses = {
+  info: "mt-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600",
+  error:
+    "mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700",
+  success:
+    "mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700",
+};
+
+const listingStatusBaseClass = "text-sm";
+const listingStatusToneClasses = {
+  info: "text-slate-600",
+  warning: "text-amber-600",
+  error: "text-red-600",
+};
+
+const bidNoticeClasses = {
+  info: "mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600",
+  warning:
+    "mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700",
+  error:
+    "mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700",
+  success:
+    "mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700",
+};
+
+const listingBidClass =
+  "flex flex-wrap justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700";
+const listingBidEmptyClass = `${listingBidClass} justify-center text-slate-500`;
+
 const setStatus = (message, tone = "info") => {
   if (!statusElement) {
     return;
@@ -47,12 +76,13 @@ const setStatus = (message, tone = "info") => {
   statusElement.textContent = message;
   if (!message) {
     statusElement.hidden = true;
-    delete statusElement.dataset.tone;
+    statusElement.className = `${listingStatusBaseClass} ${listingStatusToneClasses.info}`;
     return;
   }
 
   statusElement.hidden = false;
-  statusElement.dataset.tone = tone;
+  const toneKey = tone && listingStatusToneClasses[tone] ? tone : "info";
+  statusElement.className = `${listingStatusBaseClass} ${listingStatusToneClasses[toneKey]}`;
 };
 
 const assignTextContent = (elements, value) => {
@@ -101,13 +131,14 @@ const setBidNotice = (message, tone = "info") => {
   if (!message) {
     bidNotice.hidden = true;
     bidNotice.textContent = "";
-    delete bidNotice.dataset.tone;
+    bidNotice.className = bidNoticeClasses.info;
     return;
   }
 
   bidNotice.hidden = false;
   bidNotice.textContent = message;
-  bidNotice.dataset.tone = tone;
+  const toneKey = tone && bidNoticeClasses[tone] ? tone : "info";
+  bidNotice.className = bidNoticeClasses[toneKey];
 };
 
 const setBidStatus = (message, tone = "info") => {
@@ -118,20 +149,16 @@ const setBidStatus = (message, tone = "info") => {
   if (!message) {
     bidStatus.hidden = true;
     bidStatus.textContent = "";
-    bidStatus.className = "form__status";
+    bidStatus.className = formStatusClasses.info;
+    delete bidStatus.dataset.tone;
     return;
-  }
-
-  const classes = ["form__status"];
-  if (tone === "error") {
-    classes.push("form__status--error");
-  } else if (tone === "success") {
-    classes.push("form__status--success");
   }
 
   bidStatus.hidden = false;
   bidStatus.textContent = message;
-  bidStatus.className = classes.join(" ");
+  const toneKey = tone && formStatusClasses[tone] ? tone : "info";
+  bidStatus.className = formStatusClasses[toneKey];
+  bidStatus.dataset.tone = toneKey;
 };
 
 const isListingClosed = (listing) => {
@@ -232,7 +259,7 @@ const renderBids = (bids = []) => {
 
   if (!bids.length) {
     const empty = document.createElement("li");
-    empty.className = "listing-bid listing-bid--empty";
+    empty.className = listingBidEmptyClass;
     empty.textContent = "No bids yet. Be the first to place one!";
     bidsContainer.append(empty);
     return;
@@ -244,7 +271,7 @@ const renderBids = (bids = []) => {
     .sort((a, b) => Number(b.amount) - Number(a.amount))
     .forEach((bid) => {
       const item = document.createElement("li");
-      item.className = "listing-bid";
+      item.className = listingBidClass;
       const bidder = bid.bidder?.name || "Anonymous";
       const created = bid.created ? new Date(bid.created).toISOString() : "";
       item.innerHTML = `
@@ -429,7 +456,7 @@ if (bidForm) {
 }
 
 const handleBidInput = () => {
-  if (bidStatus && bidStatus.className.includes("form__status--error")) {
+  if (bidStatus && bidStatus.dataset.tone === "error") {
     setBidStatus("");
   }
 };

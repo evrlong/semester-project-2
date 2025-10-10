@@ -5,28 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Listing details | Auction House</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-    <header class="site-header">
-      <div class="wrapper site-header__inner">
-        <a class="brand" href="./index.html">Auction House</a>
-        <nav class="site-nav" aria-label="Main navigation">
-          <ul class="site-nav__list">
-            <li><a class="site-nav__link" href="./index.html">Home</a></li>
+    <header class="w-full border-b border-slate-200 bg-white/80 backdrop-blur">
+      <div
+        class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4"
+      >
+        <a
+          class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-600"
+          href="./index.html"
+          >Auction House</a
+        >
+        <nav aria-label="Main navigation">
+          <ul class="m-0 flex list-none flex-wrap items-center gap-3 p-0">
             <li>
-              <a class="site-nav__link" href="./allListing.html">Listings</a>
+              <a
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                href="./index.html"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                href="./allListing.html"
+                >Listings</a
+              >
             </li>
             <li data-auth="signed-in" hidden>
-              <span class="badge" data-user-credits></span>
+              <span
+                class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700"
+                data-user-credits
+              ></span>
             </li>
             <li data-auth="signed-in" hidden>
-              <span class="site-nav__user"
+              <span class="text-xs uppercase tracking-[0.3em] text-slate-500"
                 >Hi, <strong data-user-name></strong
               ></span>
             </li>
             <li data-auth="signed-in" hidden>
               <a
-                class="site-nav__link"
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 href="./profile.html"
                 data-profile-link
                 aria-current="page"
@@ -34,13 +54,25 @@
               >
             </li>
             <li data-auth="signed-out">
-              <a class="site-nav__link" href="./register.html">Register</a>
+              <a
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                href="./register.html"
+                >Register</a
+              >
             </li>
             <li data-auth="signed-out">
-              <a class="site-nav__link" href="./login.html">Log in</a>
+              <a
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                href="./login.html"
+                >Log in</a
+              >
             </li>
             <li data-auth="signed-in" hidden>
-              <button class="site-nav__button" type="button" data-logout>
+              <button
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                type="button"
+                data-logout
+              >
                 Log out
               </button>
             </li>
@@ -49,16 +81,33 @@
       </div>
     </header>
 
-    <main class="wrapper stack">
-      <section class="hero-card hero-card--listing">
-        <figure class="hero-card__media">
+    <main
+      class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-6 py-10"
+    >
+      <section
+        class="grid gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[minmax(0,320px)_minmax(0,1fr)] md:items-start"
+      >
+        <figure
+          class="flex min-h-[200px] items-center justify-center overflow-hidden rounded-xl bg-slate-100"
+        >
           <img data-listing-image alt="" hidden />
         </figure>
-        <div class="hero-card__body">
-          <p class="eyebrow">Listing</p>
-          <h1 data-listing-title>Loading…</h1>
-          <p data-listing-description>Loading description…</p>
-          <div class="listing-card__meta listing-card__meta--stack">
+        <div class="flex flex-col gap-4">
+          <p
+            class="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-500"
+          >
+            Listing
+          </p>
+          <h1
+            class="text-3xl font-semibold text-slate-900 md:text-4xl"
+            data-listing-title
+          >
+            Loading…
+          </h1>
+          <p class="text-base text-slate-600" data-listing-description>
+            Loading description…
+          </p>
+          <div class="flex flex-col items-start gap-3 text-sm text-slate-500">
             <span>Seller: <strong data-listing-seller>Loading…</strong></span>
             <span>Ends <time data-listing-deadline>Loading…</time></span>
             <span><strong data-listing-bid-count>0</strong> bids</span>
@@ -67,24 +116,30 @@
               <strong data-listing-highest-bid>Checking…</strong>
             </span>
           </div>
-          <p class="section__status" data-listing-status hidden></p>
-          <div class="section__actions">
-            <a class="button button--outline" href="./allListing.html"
+          <p class="text-sm text-slate-600" data-listing-status hidden></p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a
+              class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              href="./allListing.html"
               >Back to listings</a
             >
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="section__header">
-          <h2>Place a bid</h2>
-          <p class="section__status">
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-xl font-semibold text-slate-900">Place a bid</h2>
+          <p class="text-sm text-slate-600">
             Next minimum: <strong data-listing-next-minimum>1</strong> credits
           </p>
         </div>
-        <div class="bid-summary">
-          <div class="bid-summary__meta">
+        <div
+          class="flex flex-wrap items-baseline justify-between gap-3 text-sm text-slate-600"
+        >
+          <div class="flex flex-wrap gap-3">
             <span>
               Highest bid:
               <strong data-listing-highest-bid>Checking…</strong>
@@ -95,11 +150,17 @@
             </span>
           </div>
         </div>
-        <p class="bid-notice" data-bid-notice hidden></p>
-        <form class="bid-form" data-bid-form novalidate>
-          <div class="bid-form__fields">
-            <label class="bid-form__field">
-              <span>Bid amount (credits)</span>
+        <p
+          class="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"
+          data-bid-notice
+          hidden
+        ></p>
+        <form class="mt-4 flex flex-col gap-4" data-bid-form novalidate>
+          <div class="flex flex-wrap gap-3">
+            <label class="min-w-[200px] flex-1">
+              <span class="mb-2 block text-sm font-semibold text-slate-700"
+                >Bid amount (credits)</span
+              >
               <input
                 class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
                 type="number"
@@ -112,27 +173,39 @@
                 required
               />
             </label>
-            <button class="button" type="submit" data-bid-submit>
+            <button
+              class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              type="submit"
+              data-bid-submit
+            >
               Place bid
             </button>
           </div>
-          <p class="bid-form__help">
+          <p class="text-sm text-slate-500">
             Enter at least
             <strong data-listing-next-minimum>1</strong>
             credits.
           </p>
-          <p class="form__status" data-bid-status hidden></p>
+          <p
+            class="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600"
+            data-bid-status
+            hidden
+          ></p>
         </form>
       </section>
 
-      <section class="section">
-        <h2>Recent bids</h2>
-        <ul class="listing-bids" data-bid-list></ul>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+        <h2 class="text-xl font-semibold text-slate-900">Recent bids</h2>
+        <ul class="mt-4 flex list-none flex-col gap-3 p-0" data-bid-list></ul>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="wrapper site-footer__inner">
+    <footer class="border-t border-slate-200 bg-white">
+      <div
+        class="mx-auto flex w-full max-w-5xl items-center justify-center px-6 py-6 text-sm text-slate-500"
+      >
         <p>&copy; <span data-year></span> Auction House</p>
       </div>
     </footer>

@@ -12,9 +12,17 @@ const teardown = initPageChrome();
 
 const form = document.querySelector("[data-auth-form]");
 
+const formStatusClasses = {
+  info: "mt-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600",
+  error:
+    "mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700",
+  success:
+    "mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700",
+};
+
 const createStatusElement = () => {
   const status = document.createElement("p");
-  status.className = "form__status";
+  status.className = formStatusClasses.info;
   status.setAttribute("role", "status");
   status.setAttribute("aria-live", "polite");
   status.hidden = true;
@@ -39,7 +47,7 @@ if (form) {
     if (!email || !password) {
       status.hidden = false;
       status.textContent = "Enter both your email and password.";
-      status.className = "form__status form__status--error";
+      status.className = formStatusClasses.error;
       return;
     }
 
@@ -47,7 +55,7 @@ if (form) {
       form.dataset.submitting = "true";
       status.hidden = false;
       status.textContent = "Signing you in…";
-      status.className = "form__status";
+      status.className = formStatusClasses.info;
 
       const response = await loginUser({ email, password });
       const auth = response?.data;
@@ -75,7 +83,7 @@ if (form) {
       }
 
       status.textContent = "Signed in successfully. Redirecting…";
-      status.className = "form__status form__status--success";
+      status.className = formStatusClasses.success;
 
       window.setTimeout(() => {
         const url = new URL("./profile.html", window.location.origin);
@@ -88,7 +96,7 @@ if (form) {
       console.error(error);
       status.hidden = false;
       status.textContent = error.message || "Login failed. Please try again.";
-      status.className = "form__status form__status--error";
+      status.className = formStatusClasses.error;
     } finally {
       form.dataset.submitting = "false";
     }
