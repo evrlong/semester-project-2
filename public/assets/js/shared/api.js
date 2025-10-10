@@ -46,6 +46,10 @@ export const clearStoredAuth = () => {
   localStorage.removeItem(STORAGE_KEY);
 };
 
+export const emitAuthChanged = () => {
+  window.dispatchEvent(new CustomEvent("auth:changed"));
+};
+
 const extractErrorMessage = async (response) => {
   try {
     const contentType = response.headers.get("content-type") || "";
@@ -200,6 +204,35 @@ export const getProfileWins = (name, params) =>
     `/auction/profiles/${encodeURIComponent(name)}/wins${buildQuery(params)}`,
   );
 
-export const emitAuthChanged = () => {
-  window.dispatchEvent(new CustomEvent("auth:changed"));
+export const refreshStoredAuthProfile = async () => {
+  const auth = getStoredAuth();
+  const name = auth?.name;
+
+  if (!auth?.accessToken || !name) {
+    return;
+  }
+
+  try {
+    const response = await getProfile(name);
+    const profile = response?.data;
+
+    if (!profile) {
+      return;
+    }
+
+    const credits = Number(profile.credits);
+
+    if (!Number.isFinite(credits)) {
+      return;
+    }
+
+    if (auth.credits === credits) {
+      return;
+    }
+
+    setStoredAuth({ ...auth, credits });
+    emitAuthChanged();
+  } catch (error) {
+    console.warn("Unable to refresh stored profile", error);
+  }
 };

@@ -175,8 +175,10 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
   renderCollection(winsContainer, profile.wins, "No wins yet.");
 
   if (auth?.name && auth.name === profile.name) {
-    setStoredAuth({ ...auth, credits });
-    emitAuthChanged();
+    if (auth.credits !== credits) {
+      setStoredAuth({ ...auth, credits });
+      emitAuthChanged();
+    }
   }
 };
 

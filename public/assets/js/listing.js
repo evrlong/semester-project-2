@@ -1,6 +1,11 @@
 /* eslint-env browser */
 
-import { createBid, getListing, getStoredAuth } from "./shared/api.js";
+import {
+  createBid,
+  getListing,
+  getStoredAuth,
+  refreshStoredAuthProfile,
+} from "./shared/api.js";
 import { fallbackListings } from "./shared/data.js";
 import { formatDate, initPageChrome } from "./shared/page.js";
 
@@ -440,6 +445,7 @@ if (bidForm) {
       setBidStatus("Bid placed! Good luck.", "success");
       bidForm.reset();
       await loadListing({ silent: true });
+      await refreshStoredAuthProfile();
     } catch (error) {
       console.error(error);
       setBidStatus(

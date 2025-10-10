@@ -36,7 +36,7 @@ const state = {
 };
 
 const listingCardClass =
-  "flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
+  "flex h-full flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
 const listingCardHeaderClass = "flex flex-col gap-1";
 const listingCardTitleClass = "m-0 text-lg font-semibold text-slate-900";
 const listingCardLinkClass =
