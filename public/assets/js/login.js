@@ -86,7 +86,7 @@ if (form) {
       status.className = formStatusClasses.success;
 
       window.setTimeout(() => {
-        const url = new URL("./profile.html", window.location.origin);
+        const url = new URL("./profile.html", window.location.href);
         if (auth.name) {
           url.searchParams.set("name", auth.name);
         }
