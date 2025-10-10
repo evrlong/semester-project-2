@@ -1,40 +1,44 @@
-export const listingSeedData = [
+export const fallbackListings = [
   {
-    id: "assignment-1",
-    title: "Sprint planning workshop",
+    id: "sample-1",
+    title: "Hand-painted cat portrait",
     description:
-      "Coordinate roles, deadlines and deliverables for the upcoming sprint.",
-    category: "event",
-    deadline: new Date().setDate(new Date().getDate() + 7),
-    status: "Scheduled",
-    owner: "Product team",
+      "A cheerful study in gouache ready to brighten any reading nook.",
+    media: [
+      {
+        url: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80",
+        alt: "Cat portrait",
+      },
+    ],
+    endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString(),
+    _count: { bids: 2 },
+    seller: { name: "Sample seller" },
   },
   {
-    id: "resource-2",
-    title: "Design system refresh",
-    description: "Update spacing, typography tokens and component guidelines.",
-    category: "resource",
-    deadline: new Date().setDate(new Date().getDate() + 14),
-    status: "In progress",
-    owner: "Design ops",
-  },
-  {
-    id: "assignment-3",
-    title: "Usability testing report",
+    id: "sample-2",
+    title: "Vintage brass collar",
     description:
-      "Summarise feedback from test participants and prioritise fixes.",
-    category: "assignment",
-    deadline: new Date().setDate(new Date().getDate() + 21),
-    status: "Awaiting review",
-    owner: "Research team",
+      "Soft velvet lining with tiny bells collected from a Parisian market.",
+    media: [
+      {
+        url: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=800&q=80",
+        alt: "Brass collar",
+      },
+    ],
+    endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
+    _count: { bids: 5 },
+    seller: { name: "Sample seller" },
   },
 ];
 
-export const profileSeedData = {
-  name: "Avery Johnson",
-  email: "avery.johnson@example.com",
-  stats: {
-    active: 3,
-    completed: 8,
+export const fallbackProfile = {
+  name: "Sample Seller",
+  email: "sample.seller@stud.noroff.no",
+  credits: 0,
+  listings: fallbackListings,
+  wins: [],
+  _count: {
+    listings: fallbackListings.length,
+    wins: 0,
   },
 };

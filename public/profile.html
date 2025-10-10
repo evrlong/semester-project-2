@@ -3,57 +3,153 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Profile | Semester Project 2</title>
+    <title>Profile | Auction House</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
-  <body class="page page--profile">
-    <header class="page__header">
-      <div class="page__header-inner">
-        <h1>Your profile</h1>
-        <p>Manage your personal information and account preferences.</p>
+  <body>
+    <header class="site-header">
+      <div class="wrapper site-header__inner">
+        <a class="brand" href="./index.html">Auction House</a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <ul class="site-nav__list">
+            <li><a class="site-nav__link" href="./index.html">Home</a></li>
+            <li>
+              <a class="site-nav__link" href="./allListing.html">Listings</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="badge" data-user-credits></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <span class="site-nav__user"
+                >Hi, <strong data-user-name></strong
+              ></span>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a
+                class="site-nav__link"
+                href="./profile.html"
+                data-profile-link
+                aria-current="page"
+                >My profile</a
+              >
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./register.html">Register</a>
+            </li>
+            <li data-auth="signed-out">
+              <a class="site-nav__link" href="./login.html">Log in</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <button class="site-nav__button" type="button" data-logout>
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
 
-    <nav class="page__nav" aria-label="Main navigation">
-      <ul class="page__nav-list">
-        <li><a href="./index.html">Home</a></li>
-        <li><a href="./login.html">Log in</a></li>
-        <li><a href="./register.html">Register</a></li>
-        <li><a href="./allListing.html">All listings</a></li>
-        <li><a href="./profile.html" aria-current="page">Profile</a></li>
-      </ul>
-    </nav>
-
-    <main class="page__main">
-      <section class="card" data-profile-summary>
-        <header class="card__header">
-          <h2>Profile summary</h2>
-        </header>
-        <dl class="definition-list">
-          <div>
-            <dt>Name</dt>
-            <dd data-profile-name>Loading…</dd>
-          </div>
-          <div>
-            <dt>Email</dt>
-            <dd data-profile-email>Loading…</dd>
-          </div>
-        </dl>
+    <main class="wrapper stack">
+      <section class="hero-card hero-card--left">
+        <h1 data-profile-name>Loading…</h1>
+        <p>Email: <span data-profile-email>Loading…</span></p>
+        <p class="profile__credits" data-profile-credits>0 credits</p>
+        <p class="section__status" data-profile-status hidden></p>
       </section>
 
-      <section class="card" data-profile-stats>
-        <header class="card__header">
-          <h2>Activity</h2>
-        </header>
-        <ul class="pill-list">
-          <li><span data-profile-active>0</span> active listings</li>
-          <li><span data-profile-completed>0</span> completed listings</li>
-        </ul>
+      <section class="section" data-profile-manage hidden>
+        <div class="stack">
+          <div>
+            <h2>Update avatar</h2>
+            <p class="form__message">
+              Add a public image URL to refresh how others see your profile.
+            </p>
+            <form class="form" data-avatar-form>
+              <label>
+                <span>Avatar URL</span>
+                <input
+                  type="url"
+                  name="avatarUrl"
+                  placeholder="https://img.service.com/avatar.jpg"
+                  required
+                />
+              </label>
+              <label>
+                <span>Alt text</span>
+                <input
+                  type="text"
+                  name="avatarAlt"
+                  placeholder="Describe your avatar"
+                />
+              </label>
+              <button type="submit" class="button">Save avatar</button>
+            </form>
+            <p class="form__status" data-avatar-status hidden></p>
+          </div>
+
+          <div>
+            <h2>Create a listing</h2>
+            <p class="form__message">
+              Provide a title, description, deadline, and at least one image to
+              start a new auction.
+            </p>
+            <form class="form" data-listing-form>
+              <label>
+                <span>Title</span>
+                <input type="text" name="title" required />
+              </label>
+              <label>
+                <span>Description</span>
+                <textarea name="description" rows="4" required></textarea>
+              </label>
+              <label>
+                <span>Deadline</span>
+                <input type="datetime-local" name="endsAt" required />
+              </label>
+              <label>
+                <span>Tags (comma separated)</span>
+                <input type="text" name="tags" placeholder="art,cat,handmade" />
+              </label>
+              <div class="form__media" data-media-fields></div>
+              <button
+                type="button"
+                class="button button--outline"
+                data-add-media
+              >
+                Add another image
+              </button>
+              <button type="submit" class="button">Publish listing</button>
+            </form>
+            <p class="form__status" data-listing-status hidden></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__header">
+          <h2>Active listings</h2>
+          <p class="section__status">
+            <span data-profile-listing-count>0</span> live
+          </p>
+        </div>
+        <ul class="listing-list" data-profile-listings></ul>
+      </section>
+
+      <section class="section">
+        <div class="section__header">
+          <h2>Wins</h2>
+          <p class="section__status">
+            <span data-profile-win-count>0</span> won
+          </p>
+        </div>
+        <ul class="listing-list" data-profile-wins></ul>
       </section>
     </main>
 
-    <footer class="page__footer">
-      &copy; <span data-year></span> Semester Project 2 Team
+    <footer class="site-footer">
+      <div class="wrapper site-footer__inner">
+        <p>&copy; <span data-year></span> Auction House</p>
+      </div>
     </footer>
 
     <script type="module" src="./assets/js/profile.js"></script>
