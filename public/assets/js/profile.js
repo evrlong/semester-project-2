@@ -7,7 +7,7 @@ import {
   setStoredAuth,
 } from "./shared/api.js";
 import { fallbackProfile } from "./shared/data.js";
-import { formatDate, initPageChrome, renderCount } from "./shared/page.js";
+import { initPageChrome, renderCount } from "./shared/page.js";
 
 const teardown = initPageChrome();
 
@@ -26,17 +26,20 @@ const params = new URLSearchParams(window.location.search);
 const auth = getStoredAuth();
 const profileName = params.get("name") || auth?.name || "";
 
+const numberFormatter = new Intl.NumberFormat();
+
 const listingCardClass =
-  "flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
+  "group relative flex h-full cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors transition-shadow hover:border-indigo-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
 const listingCardMediaClass =
   "aspect-[4/3] overflow-hidden rounded-xl bg-slate-100";
 const listingCardBodyClass = "flex flex-col gap-3";
-const listingCardTitleClass = "m-0 text-lg font-semibold text-slate-900";
-const listingCardLinkClass =
-  "text-slate-900 no-underline transition hover:text-indigo-600 hover:underline";
-const listingCardDescriptionClass = "m-0 text-base text-slate-600";
-const listingCardMetaClass = "flex flex-wrap gap-3 text-sm text-slate-500";
-const emptyListingCardClass = `${listingCardClass} text-center text-sm text-slate-500`;
+const listingCardTitleClass =
+  "m-0 text-lg font-semibold text-slate-900 transition-colors group-hover:text-indigo-600";
+const listingCardMetaPrimaryClass = "m-0 text-sm text-slate-600";
+const listingCardMetaSecondaryClass =
+  "m-0 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500";
+const emptyListingCardClass =
+  "flex h-full min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500";
 const profileStatusBaseClass = "text-sm";
 const profileStatusToneClasses = {
   info: "text-slate-600",
@@ -80,9 +83,72 @@ const assignText = (elements, value) => {
   }
 };
 
+const formatCredits = (value) =>
+  `${numberFormatter.format(Math.max(0, Number(value) || 0))} credits`;
+
+const getHighestBidAmount = (listing) => {
+  if (!listing) {
+    return 0;
+  }
+
+  const bids = Array.isArray(listing.bids) ? listing.bids : [];
+  const highestFromBids = bids.reduce((highest, bid) => {
+    const amount = Number(bid?.amount);
+    if (!Number.isFinite(amount)) {
+      return highest;
+    }
+    return amount > highest ? amount : highest;
+  }, 0);
+
+  const directAmount = Number(
+    listing.highestBid?.amount ?? listing.highestBid ?? 0,
+  );
+  const normalizedDirect = Number.isFinite(directAmount) ? directAmount : 0;
+
+  return Math.max(highestFromBids, normalizedDirect, 0);
+};
+
+const formatTimeRemaining = (value) => {
+  if (!value) {
+    return "Ends soon";
+  }
+
+  const end = new Date(value);
+  if (Number.isNaN(end.getTime())) {
+    return "Ends soon";
+  }
+
+  const diff = end.getTime() - Date.now();
+  if (diff <= 0) {
+    return "Ended";
+  }
+
+  const totalMinutes = Math.floor(diff / 60000);
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+
+  const parts = [];
+  if (days > 0) {
+    parts.push(`${days}d`);
+  }
+  parts.push(`${hours}h`);
+  parts.push(`${minutes.toString().padStart(2, "0")}m`);
+
+  return `Ends in ${parts.join(" ")}`;
+};
+
 const createListingItem = (listing, { canEdit = false } = {}) => {
   const item = document.createElement("li");
-  item.className = listingCardClass;
+  item.className = "relative h-full";
+
+  const link = document.createElement("a");
+  link.className = listingCardClass;
+  link.href = `./listing.html?id=${encodeURIComponent(listing.id)}`;
+  link.setAttribute(
+    "aria-label",
+    listing.title ? `View ${listing.title}` : "View listing",
+  );
 
   const media = listing.media?.[0];
   if (media?.url) {
@@ -94,7 +160,7 @@ const createListingItem = (listing, { canEdit = false } = {}) => {
     image.alt = media.alt || listing.title;
     figure.append(image);
 
-    item.append(figure);
+    link.append(figure);
   }
 
   const content = document.createElement("div");
@@ -102,44 +168,49 @@ const createListingItem = (listing, { canEdit = false } = {}) => {
 
   const title = document.createElement("h3");
   title.className = listingCardTitleClass;
-  title.innerHTML = `<a class="${listingCardLinkClass}" href="./listing.html?id=${encodeURIComponent(listing.id)}">${listing.title}</a>`;
+  title.textContent = listing.title || "Untitled listing";
   content.append(title);
 
-  const description = document.createElement("p");
-  description.className = listingCardDescriptionClass;
-  description.textContent = listing.description || "No description provided.";
-  content.append(description);
-
-  const meta = document.createElement("div");
-  meta.className = listingCardMetaClass;
   const bidCount = listing._count?.bids ?? listing.bids?.length ?? 0;
-  meta.innerHTML = `
-    <span>Ends ${formatDate(listing.endsAt)}</span>
-    <span><strong>${bidCount}</strong> bids</span>
-  `;
-  content.append(meta);
+  const highestBid = getHighestBidAmount(listing);
+  const bidLabel = bidCount === 1 ? "bid" : "bids";
+
+  const bidsLine = document.createElement("p");
+  bidsLine.className = listingCardMetaPrimaryClass;
+  const highestDisplay =
+    bidCount > 0
+      ? `<strong>${formatCredits(highestBid)}</strong>`
+      : '<span class="font-medium text-slate-500">No bids yet</span>';
+  bidsLine.innerHTML = `<strong>${numberFormatter.format(
+    bidCount,
+  )}</strong> ${bidLabel} · Highest bid ${highestDisplay}`;
+  content.append(bidsLine);
+
+  const endsLine = document.createElement("p");
+  endsLine.className = listingCardMetaSecondaryClass;
+  endsLine.textContent = formatTimeRemaining(listing.endsAt);
+  content.append(endsLine);
+
+  link.append(content);
+  item.append(link);
 
   if (canEdit && listing?.id) {
-    const actions = document.createElement("div");
-    actions.className = "flex flex-wrap gap-2";
-
     const editLink = document.createElement("a");
     editLink.className =
-      "inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+      "absolute right-5 top-5 z-10 inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
     const url = new URL("./editListing.html", window.location.href);
     url.searchParams.set("id", listing.id);
     editLink.href = `${url.pathname}${url.search}`;
     editLink.textContent = "Edit listing";
-    actions.append(editLink);
-
-    content.append(actions);
+    editLink.setAttribute(
+      "aria-label",
+      listing.title ? `Edit ${listing.title}` : "Edit listing",
+    );
+    item.append(editLink);
   }
-
-  item.append(content);
 
   return item;
 };
-
 const renderCollection = (container, items, emptyMessage, options = {}) => {
   if (!container) {
     return;
