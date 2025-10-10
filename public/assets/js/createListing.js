@@ -304,9 +304,11 @@ updateMediaControls();
 
 window.addEventListener("auth:changed", ensureAuthState);
 
-window.addEventListener("unload", () => {
+const handlePageHide = () => {
   window.removeEventListener("auth:changed", ensureAuthState);
   if (typeof teardown === "function") {
     teardown();
   }
-});
+};
+
+window.addEventListener("pagehide", handlePageHide, { once: true });

@@ -316,8 +316,10 @@ const loadProfile = async () => {
 
 loadProfile();
 
-window.addEventListener("unload", () => {
+const handlePageHide = () => {
   if (typeof teardown === "function") {
     teardown();
   }
-});
+};
+
+window.addEventListener("pagehide", handlePageHide, { once: true });
