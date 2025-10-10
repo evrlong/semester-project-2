@@ -1,6 +1,11 @@
 /* eslint-env browser */
 
-import { getListing, getStoredAuth, updateListing } from "./shared/api.js";
+import {
+  getListing,
+  getStoredAuth,
+  updateListing,
+  deleteListing,
+} from "./shared/api.js";
 import { initPageChrome } from "./shared/page.js";
 
 const teardown = initPageChrome();
@@ -15,6 +20,7 @@ const addMediaButton = document.querySelector("[data-add-media]");
 const mediaList = document.querySelector("[data-media-list]");
 const mediaTemplate = document.querySelector("[data-media-template]");
 const submitButton = document.querySelector("[data-submit-button]");
+const deleteButton = document.querySelector("[data-delete-listing]");
 const cancelLink = document.querySelector("[data-cancel-edit]");
 
 const params = new URLSearchParams(window.location.search);
@@ -160,6 +166,17 @@ const removeMediaItem = (button) => {
   updateMediaControls();
 };
 
+const setDeleteButtonVisible = (visible) => {
+  if (!deleteButton) {
+    return;
+  }
+
+  deleteButton.hidden = !visible;
+  deleteButton.disabled = !visible;
+};
+
+setDeleteButtonVisible(false);
+
 const setFormDisabled = (disabled) => {
   if (!form) {
     return;
@@ -167,11 +184,16 @@ const setFormDisabled = (disabled) => {
 
   const controls = Array.from(
     form.querySelectorAll(
-      "input, textarea, button[type='submit'], button[data-add-media], button[data-remove-media]",
+      "input, textarea, button[type='submit'], button[data-add-media], button[data-remove-media], button[data-delete-listing]",
     ),
   );
 
   controls.forEach((control) => {
+    if (deleteButton && control === deleteButton && deleteButton.hidden) {
+      control.disabled = true;
+      return;
+    }
+
     control.disabled = disabled;
   });
 
@@ -185,6 +207,7 @@ const ensureAuthState = () => {
 
   if (!activeAuth?.accessToken) {
     setFormDisabled(true);
+    setDeleteButtonVisible(false);
     setStatus(
       'Sign in to edit this listing. <a class="font-semibold text-indigo-600 hover:underline" href="./login.html">Log in</a>',
       "warning",
@@ -309,6 +332,7 @@ const loadListing = async () => {
   try {
     setStatus("Loading listing\u2026", "info");
     setFormDisabled(true);
+    setDeleteButtonVisible(false);
 
     const response = await getListing(listingId, { _seller: true });
     const listing = response?.data ?? response;
@@ -320,6 +344,7 @@ const loadListing = async () => {
     if (!listingBelongsToUser(listing, activeAuth)) {
       setStatus("You can only edit your own listings.", "error");
       setFormDisabled(true);
+      setDeleteButtonVisible(false);
       return;
     }
 
@@ -327,6 +352,7 @@ const loadListing = async () => {
     document.title = `${listing.title} | Edit listing`;
     applyListingToForm(listing);
     setStatus("");
+    setDeleteButtonVisible(true);
     setFormDisabled(false);
   } catch (error) {
     console.error(error);
@@ -336,6 +362,7 @@ const loadListing = async () => {
       "error",
     );
     setFormDisabled(true);
+    setDeleteButtonVisible(false);
   }
 };
 
@@ -352,6 +379,52 @@ mediaList?.addEventListener("click", (event) => {
   const button = target.closest("[data-remove-media]");
   if (button) {
     removeMediaItem(button);
+  }
+});
+
+deleteButton?.addEventListener("click", async () => {
+  if (!listingId || !currentListing?.id) {
+    return;
+  }
+
+  if (!ensureAuthState()) {
+    return;
+  }
+
+  const confirmed = window.confirm(
+    "Delete this listing? Bidders will no longer see it and this can't be undone.",
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    setStatus("Deleting listing\u2026", "info");
+    setFormDisabled(true);
+
+    await deleteListing(listingId);
+
+    setStatus("Listing deleted. Redirecting\u2026", "success");
+
+    window.setTimeout(() => {
+      if (activeAuth?.name) {
+        const url = new URL("./profile.html", window.location.href);
+        url.searchParams.set("name", activeAuth.name);
+        window.location.href = `${url.pathname}${url.search}`;
+      } else {
+        window.location.href = "./allListing.html";
+      }
+    }, 900);
+  } catch (error) {
+    console.error(error);
+    setStatus(
+      error.message ||
+        "We couldn't delete this listing right now. Please try again.",
+      "error",
+    );
+    setDeleteButtonVisible(true);
+    setFormDisabled(false);
   }
 });
 
@@ -460,6 +533,7 @@ if (!listingId) {
     "error",
   );
   setFormDisabled(true);
+  setDeleteButtonVisible(false);
 } else if (ensureAuthState()) {
   loadListing();
 }

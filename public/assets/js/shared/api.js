@@ -198,6 +198,12 @@ export const updateListing = (id, payload) =>
     requireAuth: true,
   });
 
+export const deleteListing = (id) =>
+  request(`/auction/listings/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    requireAuth: true,
+  });
+
 export const createBid = (id, payload) =>
   request(`/auction/listings/${encodeURIComponent(id)}/bids`, {
     method: "POST",
