@@ -166,6 +166,31 @@
             >Create listing</a
           >
         </div>
+        <div
+          class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"
+        >
+          <label class="flex items-center gap-2">
+            <span class="text-sm font-semibold text-slate-700">Sort by</span>
+            <select
+              class="min-w-[180px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              data-sort
+            >
+              <option value="endingSoon">Ending soon</option>
+              <option value="price">Price (highest)</option>
+              <option value="priceLow">Price (lowest)</option>
+              <option value="added">Recently added</option>
+            </select>
+          </label>
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              data-filter-active
+              checked
+            />
+            <span>Show only active auctions</span>
+          </label>
+        </div>
         <ul
           class="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3"
           data-listings
