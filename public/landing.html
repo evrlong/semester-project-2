@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Register | Auction House</title>
+    <title>Auction House | Semester Project 2</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -72,7 +72,6 @@
                 >Create listing</a
               >
             </li>
-
             <li data-auth="signed-in" hidden>
               <a
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
@@ -83,9 +82,8 @@
             </li>
             <li data-auth="signed-out">
               <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 href="./register.html"
-                aria-current="page"
                 >Register</a
               >
             </li>
@@ -114,64 +112,79 @@
       class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-6 py-10"
     >
       <section
-        class="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
       >
         <h1 class="text-3xl font-semibold text-slate-900 md:text-4xl">
-          Create an account
+          Find your next auction
         </h1>
         <p class="text-base text-slate-600">
-          Use your Noroff email address and a password with at least 8
-          characters.
+          Search across every listing to discover something new or jump back to
+          your favourite sellers.
         </p>
-        <form class="mt-6 flex flex-col gap-5" data-register-form>
-          <label>
-            <span class="mb-2 block text-sm font-semibold text-slate-700"
-              >Name</span
-            >
+        <form class="mt-4" action="./index.html" method="get">
+          <div class="flex flex-wrap gap-3">
             <input
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-              type="text"
-              name="name"
-              autocomplete="name"
-              required
+              type="search"
+              name="query"
+              placeholder="Search listings"
+              class="min-w-[220px] flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
             />
-          </label>
-          <label>
-            <span class="mb-2 block text-sm font-semibold text-slate-700"
-              >Email</span
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-            <input
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-              type="email"
-              name="email"
-              autocomplete="email"
-              required
-            />
-          </label>
-          <label>
-            <span class="mb-2 block text-sm font-semibold text-slate-700"
-              >Password</span
-            >
-            <input
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-              type="password"
-              name="password"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            />
-          </label>
-          <label class="flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" name="venueManager" class="w-auto" />
-            <span>I want to manage venues</span>
-          </label>
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            Register
-          </button>
+              Search
+            </button>
+          </div>
         </form>
+        <div
+          class="mt-5 flex flex-wrap gap-2"
+          aria-label="Popular search topics"
+        >
+          <span
+            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            >Collars</span
+          >
+          <span
+            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            >Portraits</span
+          >
+          <span
+            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            >Toys</span
+          >
+          <span
+            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            >Accessories</span
+          >
+          <span
+            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            >Beds</span
+          >
+        </div>
+      </section>
+
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+        <h2 class="text-xl font-semibold text-slate-900">
+          What would you like to do next?
+        </h2>
+        <p class="text-base text-slate-600">
+          Start a new listing right away or keep browsing what's already live.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+            href="./createListing.html"
+            >Create listing</a
+          >
+          <a
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+            href="./index.html"
+            >Browse listings</a
+          >
+        </div>
       </section>
     </main>
 
@@ -183,6 +196,6 @@
       </div>
     </footer>
 
-    <script type="module" src="./assets/js/register.js"></script>
+    <script type="module" src="./assets/js/index.js"></script>
   </body>
 </html>
