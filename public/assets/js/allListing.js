@@ -14,17 +14,30 @@ const paginationElement = document.querySelector("[data-pagination]");
 const paginationStatus = document.querySelector("[data-pagination-status]");
 const paginationPrev = document.querySelector("[data-pagination-prev]");
 const paginationNext = document.querySelector("[data-pagination-next]");
+const sortSelect = document.querySelector("[data-sort]");
+const activeToggle = document.querySelector("[data-filter-active]");
 
 const initialParams = new URLSearchParams(window.location.search);
 const initialQuery = initialParams.get("query") || "";
 const initialPage = Math.max(Number(initialParams.get("page")) || 1, 1);
+const initialSort = initialParams.get("sort") || "";
+const initialActive = initialParams.get("active");
 
 const numberFormatter = new Intl.NumberFormat();
 
 const DEFAULT_LIMIT = 50;
-const DEFAULT_QUERY = {
-  sort: "created",
-  sortOrder: "desc",
+const SORT_KEYS = ["endingSoon", "price", "priceLow", "added"];
+const DEFAULT_SORT_KEY = SORT_KEYS[0];
+const normalizeSortKey = (value) =>
+  SORT_KEYS.includes(String(value)) ? String(value) : DEFAULT_SORT_KEY;
+const parseActiveFlag = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return true;
+  }
+  const normalized = String(value).toLowerCase();
+  return normalized !== "false" && normalized !== "0";
+};
+const DEFAULT_QUERY_BASE = {
   _seller: true,
   _bids: true,
   limit: DEFAULT_LIMIT,
@@ -33,6 +46,8 @@ const DEFAULT_QUERY = {
 const state = {
   query: String(initialQuery).trim(),
   page: initialPage,
+  sort: normalizeSortKey(initialSort),
+  activeOnly: parseActiveFlag(initialActive),
 };
 
 const listingCardClass =
@@ -54,18 +69,28 @@ const listingStatusToneClasses = {
   error: "text-red-600",
 };
 
-const updateSearchField = () => {
+const updateControls = () => {
   if (!searchForm) {
-    return;
+    return undefined;
   }
 
   const input = searchForm.querySelector('input[name="query"]');
   if (input) {
     input.value = state.query;
   }
+
+  if (sortSelect) {
+    sortSelect.value = state.sort;
+  }
+
+  if (activeToggle) {
+    activeToggle.checked = Boolean(state.activeOnly);
+  }
+
+  return undefined;
 };
 
-updateSearchField();
+updateControls();
 
 const updateQueryString = () => {
   const params = new URLSearchParams();
@@ -74,6 +99,12 @@ const updateQueryString = () => {
   }
   if (state.page > 1) {
     params.set("page", String(state.page));
+  }
+  if (state.sort && state.sort !== DEFAULT_SORT_KEY) {
+    params.set("sort", state.sort);
+  }
+  if (!state.activeOnly) {
+    params.set("active", "false");
   }
   const queryString = params.toString();
   const url = `${window.location.pathname}${
@@ -124,6 +155,63 @@ const getHighestBidAmount = (listing) => {
   return Math.max(highestFromBids, normalizedDirect, 0);
 };
 
+const getTimeUntilEnd = (listing) => {
+  const endsAt = listing?.endsAt;
+  if (!endsAt) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const endTime = new Date(endsAt).getTime();
+  if (!Number.isFinite(endTime)) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return endTime - Date.now();
+};
+
+const getCreatedTime = (listing) => {
+  const created = new Date(listing?.created ?? "").getTime();
+  return Number.isFinite(created) ? created : 0;
+};
+
+const compareByCreatedDesc = (a, b) => getCreatedTime(b) - getCreatedTime(a);
+
+const SORT_CONFIG = {
+  endingSoon: {
+    query: { sort: "created", sortOrder: "desc" },
+    clientSort: (items) =>
+      [...items].sort((a, b) => getTimeUntilEnd(a) - getTimeUntilEnd(b)),
+  },
+  price: {
+    query: { sort: "created", sortOrder: "desc" },
+    clientSort: (items) =>
+      [...items].sort((a, b) => {
+        const amountDiff = getHighestBidAmount(b) - getHighestBidAmount(a);
+        if (amountDiff !== 0) {
+          return amountDiff;
+        }
+        return compareByCreatedDesc(a, b);
+      }),
+  },
+  priceLow: {
+    query: { sort: "created", sortOrder: "desc" },
+    clientSort: (items) =>
+      [...items].sort((a, b) => {
+        const amountDiff = getHighestBidAmount(a) - getHighestBidAmount(b);
+        if (amountDiff !== 0) {
+          return amountDiff;
+        }
+        return compareByCreatedDesc(a, b);
+      }),
+  },
+  added: {
+    query: { sort: "created", sortOrder: "desc" },
+  },
+};
+
+const getSortConfig = (key) =>
+  SORT_CONFIG[key] || SORT_CONFIG[DEFAULT_SORT_KEY];
+
 const formatTimeRemaining = (value) => {
   if (!value) {
     return "Ends soon";
@@ -153,6 +241,8 @@ const formatTimeRemaining = (value) => {
 
   return `Ends in ${parts.join(" ")}`;
 };
+
+const isListingActive = (listing) => getTimeUntilEnd(listing) > 0;
 
 const updatePagination = (meta, itemsLength) => {
   if (!paginationElement) {
@@ -258,7 +348,7 @@ const createListingCard = (listing) => {
   return listItem;
 };
 
-const renderListings = (items, meta) => {
+const renderListings = (items, meta, emptyMessage) => {
   if (!listElement) {
     return;
   }
@@ -268,7 +358,8 @@ const renderListings = (items, meta) => {
   if (!items.length) {
     const emptyItem = document.createElement("li");
     emptyItem.className = emptyListingCardClass;
-    emptyItem.textContent = "No listings found. Try a different search.";
+    emptyItem.textContent =
+      emptyMessage || "No listings found. Try a different search.";
     listElement.append(emptyItem);
     renderCount(resultsCount, meta?.total ?? 0);
     updatePagination(meta, 0);
@@ -288,15 +379,24 @@ const renderListings = (items, meta) => {
 const loadListings = async ({
   query = state.query,
   page = state.page,
+  sort = state.sort,
+  activeOnly = state.activeOnly,
 } = {}) => {
   state.query = String(query || "").trim();
   state.page = Math.max(Number(page) || 1, 1);
-  updateSearchField();
+  state.sort = normalizeSortKey(sort);
+  state.activeOnly = Boolean(activeOnly);
+  updateControls();
   updateQueryString();
 
-  setStatus("Loading listings…", "info");
+  setStatus("Loading listings...", "info");
 
-  const params = { ...DEFAULT_QUERY, page: state.page };
+  const sortConfig = getSortConfig(state.sort);
+  const params = {
+    ...DEFAULT_QUERY_BASE,
+    page: state.page,
+    ...sortConfig.query,
+  };
 
   try {
     const response = state.query
@@ -308,24 +408,44 @@ const loadListings = async ({
       page: Number(response?.meta?.page) || state.page,
       limit: Number(response?.meta?.limit) || params.limit,
       total:
-        response?.meta?.total !== undefined
+        response?.meta?.total !== undefined && response?.meta?.total !== null
           ? Number(response.meta.total)
           : response?.meta?.total,
     };
 
     state.page = meta.page;
 
+    const baseList = state.activeOnly
+      ? items.filter(isListingActive)
+      : items.slice();
+
+    const processedItems =
+      typeof sortConfig.clientSort === "function"
+        ? sortConfig.clientSort(baseList)
+        : baseList;
+
+    const effectiveMeta = { ...meta, total: processedItems.length };
+
     if (!items.length) {
       const message = state.query
         ? "No listings matched your search."
         : "No listings available right now.";
       setStatus(message, "warning");
-      renderListings([], { ...meta, total: meta.total ?? 0 });
+      renderListings([], effectiveMeta, message);
+      return;
+    }
+
+    if (!processedItems.length) {
+      const message = state.query
+        ? "No active listings matched your search."
+        : "No active listings available right now. Clear the filter to see ended auctions.";
+      setStatus(message, "warning");
+      renderListings([], effectiveMeta, message);
       return;
     }
 
     setStatus("");
-    renderListings(items, meta);
+    renderListings(processedItems, effectiveMeta);
   } catch (error) {
     console.error(error);
     setStatus(
@@ -333,11 +453,25 @@ const loadListings = async ({
         "We couldn't load listings right now. Showing examples instead.",
       "error",
     );
-    renderListings(fallbackListings, {
-      page: 1,
-      limit: DEFAULT_LIMIT,
-      total: fallbackListings.length,
-    });
+    const fallbackBase = state.activeOnly
+      ? fallbackListings.filter(isListingActive)
+      : fallbackListings.slice();
+    const fallbackItems =
+      typeof sortConfig.clientSort === "function"
+        ? sortConfig.clientSort(fallbackBase)
+        : fallbackBase;
+
+    renderListings(
+      fallbackItems,
+      {
+        page: 1,
+        limit: DEFAULT_LIMIT,
+        total: fallbackItems.length,
+      },
+      fallbackItems.length
+        ? undefined
+        : "No listings available right now. Try again later.",
+    );
   }
 };
 
@@ -350,6 +484,14 @@ if (searchForm) {
     loadListings({ query, page: 1 });
   });
 }
+
+sortSelect?.addEventListener("change", () => {
+  loadListings({ sort: sortSelect.value, page: 1 });
+});
+
+activeToggle?.addEventListener("change", () => {
+  loadListings({ activeOnly: activeToggle.checked, page: 1 });
+});
 
 paginationPrev?.addEventListener("click", () => {
   if (state.page <= 1) {
