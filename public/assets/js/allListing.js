@@ -1,8 +1,9 @@
 /* eslint-env browser */
 
-import { getListings, searchListings } from "./shared/api.js";
+import { getListings, getStoredAuth, searchListings } from "./shared/api.js";
 import { fallbackListings } from "./shared/data.js";
 import { initPageChrome, renderCount } from "./shared/page.js";
+import { reconcileListingsCredits } from "./shared/credits.js";
 
 const teardown = initPageChrome();
 
@@ -404,6 +405,9 @@ const loadListings = async ({
       : await getListings(params);
 
     const items = Array.isArray(response?.data) ? response.data : [];
+    if (items.length) {
+      reconcileListingsCredits(items, getStoredAuth()?.name);
+    }
     const meta = {
       page: Number(response?.meta?.page) || state.page,
       limit: Number(response?.meta?.limit) || params.limit,

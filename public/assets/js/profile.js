@@ -1,13 +1,9 @@
 /* eslint-env browser */
 
-import {
-  emitAuthChanged,
-  getProfile,
-  getStoredAuth,
-  setStoredAuth,
-} from "./shared/api.js";
+import { getProfile, getStoredAuth } from "./shared/api.js";
 import { fallbackProfile } from "./shared/data.js";
 import { initPageChrome, renderCount } from "./shared/page.js";
+import { getAvailableCredits, setBaseCredits } from "./shared/credits.js";
 
 const teardown = initPageChrome();
 
@@ -244,8 +240,6 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
 
   const rawCredits = Number(profile.credits ?? 0);
   const credits = Number.isFinite(rawCredits) ? rawCredits : 0;
-  const formattedCredits = new Intl.NumberFormat().format(credits);
-  assignText(creditElements, `${formattedCredits} credits`);
 
   const listingCount =
     profile._count?.listings ?? profile.listings?.length ?? 0;
@@ -260,6 +254,14 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
       ? currentAuth.name === profile.name
       : false;
 
+  if (isOwnProfile) {
+    setBaseCredits(credits, { reason: "Profile balance" });
+  }
+
+  const availableForDisplay = isOwnProfile ? getAvailableCredits() : credits;
+  const formattedCredits = new Intl.NumberFormat().format(availableForDisplay);
+  assignText(creditElements, `${formattedCredits} credits`);
+
   renderCollection(
     listingsContainer,
     profile.listings,
@@ -267,13 +269,6 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
     { canEdit: isOwnProfile },
   );
   renderCollection(winsContainer, profile.wins, "No wins yet.");
-
-  if (auth?.name && auth.name === profile.name) {
-    if (auth.credits !== credits) {
-      setStoredAuth({ ...auth, credits });
-      emitAuthChanged();
-    }
-  }
 };
 
 const loadProfile = async () => {

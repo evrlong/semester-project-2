@@ -246,12 +246,11 @@ export const refreshStoredAuthProfile = async () => {
       return;
     }
 
-    if (auth.credits === credits) {
-      return;
-    }
-
-    setStoredAuth({ ...auth, credits });
-    emitAuthChanged();
+    window.dispatchEvent(
+      new CustomEvent("credits:sync:base", {
+        detail: { credits, source: "profile-refresh" },
+      }),
+    );
   } catch (error) {
     console.warn("Unable to refresh stored profile", error);
   }

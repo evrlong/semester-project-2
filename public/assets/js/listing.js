@@ -1,13 +1,13 @@
 /* eslint-env browser */
 
-import {
-  createBid,
-  getListing,
-  getStoredAuth,
-  refreshStoredAuthProfile,
-} from "./shared/api.js";
+import { createBid, getListing, getStoredAuth } from "./shared/api.js";
 import { fallbackListings } from "./shared/data.js";
 import { formatDate, initPageChrome } from "./shared/page.js";
+import {
+  applyBidReservation,
+  canAffordBid,
+  reconcileListingCredits,
+} from "./shared/credits.js";
 
 const teardown = initPageChrome();
 
@@ -626,6 +626,9 @@ const hydrateListing = (listing, { updateTitle = true } = {}) => {
   renderBids(listing.bids || []);
   updateBidSummary();
   updateBidFormAvailability();
+
+  const authState = getStoredAuth();
+  reconcileListingCredits(listing, authState?.name);
   setBidStatus("");
 };
 
@@ -712,16 +715,42 @@ if (bidForm) {
       return;
     }
 
+    const affordability = canAffordBid(listingId, amount);
+    if (!affordability.ok) {
+      const shortfall = Math.max(
+        1,
+        Math.ceil(Number(affordability.deficit) || 0),
+      );
+      setBidStatus(
+        `Not enough credits. You need ${formatCredits(shortfall)} more to place this bid.`,
+        "error",
+      );
+      return;
+    }
+
     try {
       bidForm.dataset.submitting = "true";
-      setBidStatus("Placing your bid…", "info");
+      setBidStatus("Placing your bid...", "info");
 
       await createBid(listingId, { amount });
 
-      setBidStatus("Bid placed! Good luck.", "success");
+      const reservationResult = applyBidReservation({
+        listingId,
+        amount,
+        listingTitle: currentListing?.title,
+      });
+
+      if (!reservationResult.ok) {
+        setBidStatus(
+          "Bid placed, but we couldn't update credits locally. Refresh to resync.",
+          "warning",
+        );
+      } else {
+        setBidStatus("Bid placed! Good luck.", "success");
+      }
+
       bidForm.reset();
       await loadListing({ silent: true });
-      await refreshStoredAuthProfile();
     } catch (error) {
       console.error(error);
       setBidStatus(

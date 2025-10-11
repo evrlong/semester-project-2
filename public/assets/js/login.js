@@ -7,6 +7,7 @@ import {
   setStoredAuth,
 } from "./shared/api.js";
 import { initPageChrome } from "./shared/page.js";
+import { setBaseCredits } from "./shared/credits.js";
 
 const teardown = initPageChrome();
 
@@ -75,8 +76,7 @@ if (form) {
           const credits = Number.isFinite(creditValue)
             ? creditValue
             : auth.credits;
-          setStoredAuth({ ...auth, credits });
-          emitAuthChanged();
+          setBaseCredits(credits, { reason: "Synced after login" });
         }
       } catch (profileError) {
         console.warn("Unable to fetch profile after login", profileError);

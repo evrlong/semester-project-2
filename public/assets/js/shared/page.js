@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
 import { clearStoredAuth, emitAuthChanged, getStoredAuth } from "./api.js";
+import { initCreditSystem } from "./credits.js";
 
 const updateCurrentYear = () => {
   const yearElement = document.querySelector("[data-year]");
@@ -176,6 +177,7 @@ export const initPageChrome = () => {
   updateAuthUI();
   const unbindLogout = bindLogoutButtons();
   const unbindNavigation = bindNavigationToggle();
+  const unbindCredits = initCreditSystem();
 
   const handleAuthChanged = () => {
     updateAuthUI();
@@ -187,6 +189,9 @@ export const initPageChrome = () => {
     window.removeEventListener("auth:changed", handleAuthChanged);
     unbindLogout();
     unbindNavigation();
+    if (typeof unbindCredits === "function") {
+      unbindCredits();
+    }
   };
 };
 
