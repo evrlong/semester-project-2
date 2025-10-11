@@ -413,7 +413,7 @@ deleteButton?.addEventListener("click", async () => {
         url.searchParams.set("name", activeAuth.name);
         window.location.href = `${url.pathname}${url.search}`;
       } else {
-        window.location.href = "./allListing.html";
+        window.location.href = "./index.html";
       }
     }, 900);
   } catch (error) {

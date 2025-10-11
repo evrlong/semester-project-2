@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Auction House | Semester Project 2</title>
+    <title>Listings | Auction House</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -65,13 +65,6 @@
                 >Home</a
               >
             </li>
-            <li>
-              <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                href="./allListing.html"
-                >Listings</a
-              >
-            </li>
 
             <li data-auth="signed-in" hidden>
               <a
@@ -120,16 +113,16 @@
       class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-6 py-10"
     >
       <section
-        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        class="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"
       >
         <h1 class="text-3xl font-semibold text-slate-900 md:text-4xl">
-          Find your next auction
+          Browse live listings
         </h1>
         <p class="text-base text-slate-600">
-          Search across every listing to discover something new or jump back to
-          your favourite sellers.
+          Search by keyword to find auctions ending soon or items from your
+          favourite sellers.
         </p>
-        <form class="mt-4" action="./allListing.html" method="get">
+        <form class="mt-4" data-search-form>
           <div class="flex flex-wrap gap-3">
             <input
               type="search"
@@ -145,54 +138,80 @@
             </button>
           </div>
         </form>
-        <div
-          class="mt-5 flex flex-wrap gap-2"
-          aria-label="Popular search topics"
-        >
-          <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
-            >Collars</span
-          >
-          <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
-            >Portraits</span
-          >
-          <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
-            >Toys</span
-          >
-          <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
-            >Accessories</span
-          >
-          <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
-            >Beds</span
-          >
-        </div>
+        <p class="mt-4 text-sm text-slate-600" data-listings-status hidden></p>
       </section>
 
       <section
         class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
       >
-        <h2 class="text-xl font-semibold text-slate-900">
-          What would you like to do next?
-        </h2>
-        <p class="text-base text-slate-600">
-          Start a new listing right away or keep browsing what's already live.
-        </p>
-        <div class="mt-6 flex flex-wrap gap-3">
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <h2 class="text-xl font-semibold text-slate-900">
+              Available listings
+            </h2>
+            <p class="text-sm text-slate-600">
+              Showing <span data-results-count>0</span> results
+            </p>
+          </div>
           <a
             class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
             href="./createListing.html"
             >Create listing</a
           >
-          <a
-            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
-            href="./allListing.html"
-            >Browse listings</a
-          >
         </div>
+        <div
+          class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"
+        >
+          <label class="flex items-center gap-2">
+            <span class="text-sm font-semibold text-slate-700">Sort by</span>
+            <select
+              class="min-w-[180px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              data-sort
+            >
+              <option value="endingSoon">Ending soon</option>
+              <option value="price">Price (highest)</option>
+              <option value="priceLow">Price (lowest)</option>
+              <option value="added">Recently added</option>
+            </select>
+          </label>
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              data-filter-active
+              checked
+            />
+            <span>Show only active auctions</span>
+          </label>
+        </div>
+        <ul
+          class="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3"
+          data-listings
+        ></ul>
+        <nav
+          class="mt-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600"
+          data-pagination
+          aria-label="Listings pagination"
+          hidden
+        >
+          <p data-pagination-status>Page 1 of 1</p>
+          <div class="flex flex-wrap gap-3">
+            <button
+              class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              type="button"
+              data-pagination-prev
+            >
+              Previous
+            </button>
+            <button
+              class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              type="button"
+              data-pagination-next
+            >
+              Next
+            </button>
+          </div>
+        </nav>
       </section>
     </main>
 
@@ -204,6 +223,6 @@
       </div>
     </footer>
 
-    <script type="module" src="./assets/js/index.js"></script>
+    <script type="module" src="./assets/js/allListing.js"></script>
   </body>
 </html>
