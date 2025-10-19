@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Auction House | Semester Project 2</title>
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/theme.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-    <header class="w-full border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header class="w-full border-b border-slate-200 bg-[#3A2440] backdrop-blur">
       <div
         class="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between"
       >
         <div class="flex w-full items-center justify-between gap-4 md:w-auto">
           <a
-            class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-600"
+            class="text-sm font-semibold uppercase tracking-[0.2em] text-white"
             href="./index.html"
             >Auction House</a
           >
           <button
-            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 md:hidden"
+            class="nav-toggle md:hidden"
             type="button"
             data-nav-toggle
             aria-expanded="false"
@@ -52,51 +53,29 @@
             class="m-0 flex list-none flex-col gap-3 p-0 md:flex-row md:items-center md:gap-3"
           >
             <li data-auth="signed-in" hidden>
-              <span
-                class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700"
-                data-user-credits
-              ></span>
+              <span class="badge-credits" data-user-credits></span>
             </li>
             <li>
-              <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                href="./index.html"
-                >Home</a
-              >
+              <a class="nav-link" href="./index.html">Home</a>
             </li>
 
             <li data-auth="signed-in" hidden>
-              <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                href="./createListing.html"
-                >Create listing</a
-              >
+              <a class="nav-link" href="./createListing.html">Create listing</a>
             </li>
             <li data-auth="signed-in" hidden>
-              <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                href="./profile.html"
-                data-profile-link
+              <a class="nav-link" href="./profile.html" data-profile-link
                 >My profile</a
               >
             </li>
             <li data-auth="signed-out">
-              <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                href="./register.html"
-                >Register</a
-              >
+              <a class="nav-link" href="./register.html">Register</a>
             </li>
             <li data-auth="signed-out">
-              <a
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                href="./login.html"
-                >Log in</a
-              >
+              <a class="nav-link" href="./login.html">Log in</a>
             </li>
             <li data-auth="signed-in" hidden>
               <button
-                class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                class="nav-link nav-link--ghost"
                 type="button"
                 data-logout
               >
@@ -127,14 +106,9 @@
               type="search"
               name="query"
               placeholder="Search listings"
-              class="min-w-[220px] flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              class="form-control min-w-[220px] flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm"
             />
-            <button
-              type="submit"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              Search
-            </button>
+            <button type="submit" class="btn-primary">Search</button>
           </div>
         </form>
         <div
@@ -142,23 +116,23 @@
           aria-label="Popular search topics"
         >
           <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            class="inline-flex items-center rounded-full bg-[#3A2440]/10 px-3 py-1 text-xs font-medium text-[#3A2440]"
             >Collars</span
           >
           <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            class="inline-flex items-center rounded-full bg-[#3A2440]/10 px-3 py-1 text-xs font-medium text-[#3A2440]"
             >Portraits</span
           >
           <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            class="inline-flex items-center rounded-full bg-[#3A2440]/10 px-3 py-1 text-xs font-medium text-[#3A2440]"
             >Toys</span
           >
           <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            class="inline-flex items-center rounded-full bg-[#3A2440]/10 px-3 py-1 text-xs font-medium text-[#3A2440]"
             >Accessories</span
           >
           <span
-            class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+            class="inline-flex items-center rounded-full bg-[#3A2440]/10 px-3 py-1 text-xs font-medium text-[#3A2440]"
             >Beds</span
           >
         </div>
@@ -174,16 +148,8 @@
           Start a new listing right away or keep browsing what's already live.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <a
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
-            href="./createListing.html"
-            >Create listing</a
-          >
-          <a
-            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
-            href="./index.html"
-            >Browse listings</a
-          >
+          <a class="btn-primary" href="./createListing.html">Create listing</a>
+          <a class="btn-secondary" href="./index.html">Browse listings</a>
         </div>
       </section>
     </main>
