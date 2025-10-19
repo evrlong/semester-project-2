@@ -25,28 +25,28 @@ const profileName = params.get("name") || auth?.name || "";
 const numberFormatter = new Intl.NumberFormat();
 
 const listingRowClass =
-  "group relative flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm transition-colors transition-shadow hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+  "group relative flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm transition-colors transition-shadow hover:border-[#6E4B7A] hover:bg-[#3A2440]/10 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]";
 const listingThumbnailClass =
-  "relative flex h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-slate-100 ring-1 ring-inset ring-slate-200/80 transition group-hover:ring-indigo-200";
+  "relative flex h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-slate-100 ring-1 ring-inset ring-slate-200/80 transition group-hover:ring-[#CDB4DB]";
 const listingThumbnailImageClass =
   "h-full w-full object-cover transition duration-200 ease-out group-hover:scale-105";
 const listingThumbnailPlaceholderClass =
   "flex h-full w-full items-center justify-center text-xs font-semibold uppercase tracking-[0.3em] text-slate-500";
 const listingBodyClass = "flex min-w-0 flex-1 flex-col gap-2";
 const listingTitleClass =
-  "truncate text-base font-semibold leading-6 text-slate-900 transition-colors group-hover:text-indigo-600";
+  "truncate text-base font-semibold leading-6 text-slate-900 transition-colors group-hover:text-[#3A2440]";
 const listingPriceLineClass =
   "flex flex-wrap items-center gap-2 text-sm text-slate-600";
 const listingPriceLabelClass =
-  "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500";
-const listingPriceValueClass = "text-sm font-semibold text-slate-900";
+  "text-xs font-semibold uppercase tracking-[0.2em] text-[#6E4B7A]";
+const listingPriceValueClass = "text-sm font-semibold text-[#3A2440]";
 const listingBidsBadgeClass =
-  "rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600";
+  "rounded-full bg-[#3A2440]/10 px-2 py-0.5 text-xs font-medium text-[#3A2440]";
 const listingEndsContainerClass =
-  "flex shrink-0 flex-col items-end gap-1 text-right";
+  "flex shrink-0 flex-col items-end gap-2 text-right";
 const listingEndsLabelClass =
-  "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500";
-const listingEndsValueClass = "text-sm font-semibold text-slate-900";
+  "text-xs font-semibold uppercase tracking-[0.2em] text-[#6E4B7A]";
+const listingEndsValueClass = "text-sm font-semibold text-[#3A2440]";
 const emptyListingCardClass =
   "flex h-full min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500";
 const profileStatusBaseClass = "text-sm";
@@ -236,6 +236,21 @@ const createListingItem = (listing, { canEdit = false } = {}) => {
   const endsContainer = document.createElement("div");
   endsContainer.className = listingEndsContainerClass;
 
+  if (canEdit && listing?.id) {
+    const editLink = document.createElement("a");
+    editLink.className =
+      "inline-flex items-center justify-center gap-2 self-end rounded-lg border border-[#6E4B7A]/40 bg-white/90 px-3 py-1 text-xs font-semibold text-[#3A2440] shadow-sm transition hover:bg-[#3A2440]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]";
+    const url = new URL("./editListing.html", window.location.href);
+    url.searchParams.set("id", listing.id);
+    editLink.href = `${url.pathname}${url.search}`;
+    editLink.textContent = "Edit listing";
+    editLink.setAttribute(
+      "aria-label",
+      listing.title ? `Edit ${listing.title}` : "Edit listing",
+    );
+    endsContainer.append(editLink);
+  }
+
   const endsLabel = document.createElement("span");
   endsLabel.className = listingEndsLabelClass;
   endsLabel.textContent = "Ends in:";
@@ -248,21 +263,6 @@ const createListingItem = (listing, { canEdit = false } = {}) => {
 
   link.append(endsContainer);
   item.append(link);
-
-  if (canEdit && listing?.id) {
-    const editLink = document.createElement("a");
-    editLink.className =
-      "absolute right-4 top-4 z-10 inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
-    const url = new URL("./editListing.html", window.location.href);
-    url.searchParams.set("id", listing.id);
-    editLink.href = `${url.pathname}${url.search}`;
-    editLink.textContent = "Edit listing";
-    editLink.setAttribute(
-      "aria-label",
-      listing.title ? `Edit ${listing.title}` : "Edit listing",
-    );
-    item.append(editLink);
-  }
 
   return item;
 };

@@ -52,17 +52,17 @@ const state = {
 };
 
 const listingCardClass =
-  "group relative flex h-full cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors transition-shadow hover:border-indigo-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+  "group relative flex h-full cursor-pointer flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors transition-shadow hover:border-[#6E4B7A] hover:bg-[#3A2440]/5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]";
 const listingCardBodyClass = "flex flex-col gap-3";
 const listingCardTitleClass =
-  "m-0 text-lg font-semibold text-slate-900 transition-colors group-hover:text-indigo-600";
+  "m-0 text-lg font-semibold text-slate-900 transition-colors group-hover:text-[#3A2440]";
 const listingCardMetaPrimaryClass = "m-0 text-sm text-slate-600";
 const listingCardMetaSecondaryClass =
-  "m-0 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500";
+  "m-0 text-xs font-semibold uppercase tracking-[0.2em] text-[#6E4B7A]";
 const listingCardMediaClass =
-  "aspect-[4/3] overflow-hidden rounded-xl bg-slate-100";
+  "aspect-[4/3] overflow-hidden rounded-xl bg-[#3A2440]/10";
 const emptyListingCardClass =
-  "flex h-full min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-500";
+  "flex h-full min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#6E4B7A]/40 bg-white p-6 text-center text-sm text-[#3A2440]/80";
 const listingStatusBaseClass = "mt-4 text-sm";
 const listingStatusToneClasses = {
   info: "text-slate-600",
@@ -270,12 +270,14 @@ const updatePagination = (meta, itemsLength) => {
   const isLastPage = totalPages ? page >= totalPages : itemsLength < limit;
 
   if (paginationStatus) {
+    const filteredCount = Number.isFinite(meta?.filteredCount)
+      ? meta.filteredCount
+      : undefined;
+    const resultsValue = filteredCount ?? (hasTotal ? total : itemsLength);
     const pageLabel = totalPages
       ? `Page ${page} of ${totalPages}`
       : `Page ${page}`;
-    const resultLabel = hasTotal
-      ? `${numberFormatter.format(total)} results`
-      : `${itemsLength} results`;
+    const resultLabel = `${numberFormatter.format(resultsValue)} results`;
     paginationStatus.textContent = `${pageLabel} · ${resultLabel}`;
   }
 
@@ -356,13 +358,18 @@ const renderListings = (items, meta, emptyMessage) => {
 
   listElement.innerHTML = "";
 
+  const filteredCount = Number.isFinite(meta?.filteredCount)
+    ? meta.filteredCount
+    : undefined;
+  const displayCount = filteredCount ?? items.length;
+
   if (!items.length) {
     const emptyItem = document.createElement("li");
     emptyItem.className = emptyListingCardClass;
     emptyItem.textContent =
       emptyMessage || "No listings found. Try a different search.";
     listElement.append(emptyItem);
-    renderCount(resultsCount, meta?.total ?? 0);
+    renderCount(resultsCount, displayCount);
     updatePagination(meta, 0);
     return;
   }
@@ -373,7 +380,7 @@ const renderListings = (items, meta, emptyMessage) => {
   });
 
   listElement.append(fragment);
-  renderCount(resultsCount, meta?.total ?? items.length);
+  renderCount(resultsCount, displayCount);
   updatePagination(meta, items.length);
 };
 
@@ -386,7 +393,7 @@ const loadListings = async ({
   state.query = String(query || "").trim();
   state.page = Math.max(Number(page) || 1, 1);
   state.sort = normalizeSortKey(sort);
-  state.activeOnly = Boolean(activeOnly);
+  state.activeOnly = parseActiveFlag(activeOnly);
   updateControls();
   updateQueryString();
 
@@ -398,6 +405,9 @@ const loadListings = async ({
     page: state.page,
     ...sortConfig.query,
   };
+  if (state.activeOnly) {
+    params._active = true;
+  }
 
   try {
     const response = state.query
@@ -428,7 +438,11 @@ const loadListings = async ({
         ? sortConfig.clientSort(baseList)
         : baseList;
 
-    const effectiveMeta = { ...meta, total: processedItems.length };
+    const filteredCount = processedItems.length;
+    const effectiveMeta = {
+      ...meta,
+      filteredCount,
+    };
 
     if (!items.length) {
       const message = state.query

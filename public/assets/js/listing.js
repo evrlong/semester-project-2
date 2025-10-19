@@ -276,7 +276,7 @@ const renderGalleryThumbnails = () => {
     button.dataset.galleryThumb = "true";
     button.dataset.galleryIndex = String(index);
     button.className =
-      "group relative overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+      "group relative overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-[#6E4B7A] hover:bg-[#3A2440]/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]";
 
     const thumbImage = document.createElement("img");
     thumbImage.className = "aspect-[4/3] h-full w-full object-cover";
