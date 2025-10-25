@@ -42,20 +42,21 @@ const updateUserBadges = (auth) => {
 
   const creditElements = document.querySelectorAll("[data-user-credits]");
   if (creditElements.length) {
-    const credits = auth?.credits;
-    const formatted =
-      typeof credits === "number"
-        ? new Intl.NumberFormat().format(credits)
-        : "";
+    const credits = Number(auth?.credits);
+    const amount = Number.isFinite(credits) ? Math.max(0, credits) : 0;
+    const formatted = new Intl.NumberFormat().format(amount);
 
     creditElements.forEach((element) => {
-      if (formatted) {
-        element.textContent = `${formatted} credits`;
-        element.hidden = false;
-      } else {
-        element.textContent = "";
-        element.hidden = true;
-      }
+      element.hidden = false;
+      element.innerHTML = [
+        `<span class="text-sm font-semibold text-[#B7791F]">${formatted}</span>`,
+        '<span class="relative inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 shadow-inner shadow-amber-600/40">',
+        '  <span class="absolute inset-[2px] rounded-full bg-gradient-to-br from-amber-50 via-amber-200 to-amber-400"></span>',
+        '  <span class="relative text-xs font-semibold text-[#6B3F00]">&cent;</span>',
+        "</span>",
+        '<span class="sr-only">credits</span>',
+      ].join("");
+      element.classList.add("inline-flex", "items-center", "gap-2");
     });
   }
 };
