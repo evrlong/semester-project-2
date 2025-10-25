@@ -92,6 +92,40 @@ const assignText = (elements, value) => {
   }
 };
 
+const renderCreditBadge = (elements, value) => {
+  if (!elements && elements !== 0) {
+    return;
+  }
+
+  const amount = Math.max(0, Number(value) || 0);
+  const formatted = numberFormatter.format(amount);
+  const markup = [
+    `<span class="text-lg font-semibold text-[#B7791F]">${formatted}</span>`,
+    '<span class="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 shadow-inner shadow-amber-600/40">',
+    '  <span class="absolute inset-[3px] rounded-full bg-gradient-to-br from-amber-50 via-amber-200 to-amber-400"></span>',
+    '  <span class="relative text-sm font-semibold text-[#6B3F00]">&cent;</span>',
+    "</span>",
+    '<span class="sr-only">credits</span>',
+  ].join("");
+
+  const apply = (element) => {
+    if (!element) {
+      return;
+    }
+
+    element.classList.add("flex", "items-center", "gap-3", "text-[#B7791F]");
+    element.classList.remove("text-slate-900");
+    element.innerHTML = markup;
+  };
+
+  if (typeof elements?.forEach === "function" && !elements.nodeType) {
+    elements.forEach(apply);
+    return;
+  }
+
+  apply(elements);
+};
+
 const formatCredits = (value) =>
   `${numberFormatter.format(Math.max(0, Number(value) || 0))} credits`;
 
@@ -180,7 +214,7 @@ const createListingItem = (listing, { canEdit = false } = {}) => {
     const initial =
       typeof listing?.title === "string" && listing.title.trim()
         ? listing.title.trim().charAt(0).toUpperCase()
-        : "•";
+        : "\u2022";
     placeholder.textContent = initial;
     thumbnail.append(placeholder);
   }
@@ -318,8 +352,7 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
   }
 
   const availableForDisplay = isOwnProfile ? getAvailableCredits() : credits;
-  const formattedCredits = new Intl.NumberFormat().format(availableForDisplay);
-  assignText(creditElements, `${formattedCredits} credits`);
+  renderCreditBadge(creditElements, availableForDisplay);
 
   renderCollection(
     listingsContainer,
@@ -337,7 +370,7 @@ const loadProfile = async () => {
     return;
   }
 
-  setStatus("Loading profile…", "info");
+  setStatus("Loading profile...", "info");
 
   try {
     const response = await getProfile(profileName, {
