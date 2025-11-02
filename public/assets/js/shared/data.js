@@ -51,6 +51,10 @@ export const fallbackProfile = {
   name: "Sample Seller",
   email: "sample.seller@stud.noroff.no",
   credits: 0,
+  avatar: {
+    url: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=320&q=80",
+    alt: "Profile placeholder illustration",
+  },
   listings: fallbackListings,
   wins: [],
   _count: {

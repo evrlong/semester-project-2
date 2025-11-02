@@ -224,6 +224,13 @@ export const getProfileWins = (name, params) =>
     `/auction/profiles/${encodeURIComponent(name)}/wins${buildQuery(params)}`,
   );
 
+export const updateProfileAvatar = (name, payload) =>
+  request(`/auction/profiles/${encodeURIComponent(name)}/media`, {
+    method: "PUT",
+    body: payload,
+    requireAuth: true,
+  });
+
 export const refreshStoredAuthProfile = async () => {
   const auth = getStoredAuth();
   const name = auth?.name;
