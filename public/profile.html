@@ -98,18 +98,116 @@
       <section
         class="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm"
       >
-        <h1
-          class="text-3xl font-semibold text-slate-900 md:text-4xl"
-          data-profile-name
+        <div
+          class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
         >
-          Loading…
-        </h1>
-        <p class="text-base text-slate-600">
-          Email: <span data-profile-email>Loading…</span>
-        </p>
-        <p class="text-base font-semibold text-slate-900" data-profile-credits>
-          0 credits
-        </p>
+          <div class="flex items-center gap-6">
+            <div
+              class="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-inner shadow-slate-200/80"
+            >
+              <button
+                class="absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-[#3A2440]/90 text-white opacity-0 shadow-sm transition hover:bg-[#29172D] focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]/80 group-hover:opacity-100"
+                type="button"
+                data-avatar-edit-trigger
+                data-avatar-overlay
+                hidden
+              >
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M16.862 3.487a2.25 2.25 0 0 0-3.183 0L5.25 11.915V15h3.086l8.429-8.429a2.25 2.25 0 0 0 0-3.084Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12.75 5.25 15.75 8.25"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.5 18.25h13"
+                  />
+                </svg>
+                <span class="sr-only">Change avatar</span>
+              </button>
+              <img
+                class="h-full w-full object-cover"
+                data-profile-avatar-image
+                alt=""
+                hidden
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <h1
+                class="text-3xl font-semibold text-slate-900 md:text-4xl"
+                data-profile-name
+              >
+                Loading.
+              </h1>
+              <p class="text-base text-slate-600">
+                Email: <span data-profile-email>Loading.</span>
+              </p>
+              <p
+                class="text-base font-semibold text-slate-900"
+                data-profile-credits
+              >
+                0 credits
+              </p>
+            </div>
+          </div>
+        </div>
+        <form
+          class="mt-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+          data-avatar-form
+          hidden
+          style="display: none"
+        >
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-700" for="avatar-url"
+              >Avatar image URL</label
+            >
+            <input
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#6E4B7A] focus:outline-none focus:ring-2 focus:ring-[#CDB4DB]/70"
+              type="url"
+              name="avatarUrl"
+              id="avatar-url"
+              placeholder="https://example.com/avatar.jpg"
+              required
+              data-avatar-url-input
+            />
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <button
+              class="inline-flex items-center justify-center rounded-full bg-[#3A2440] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#29172D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]"
+              type="submit"
+              data-avatar-form-submit
+            >
+              Save avatar
+            </button>
+            <button
+              class="inline-flex items-center justify-center rounded-full border border-transparent px-4 py-2 text-sm font-semibold text-[#3A2440] transition hover:border-[#3A2440] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CDB4DB]"
+              type="button"
+              data-avatar-form-cancel
+            >
+              Cancel
+            </button>
+          </div>
+          <p
+            class="text-sm"
+            role="status"
+            aria-live="polite"
+            data-avatar-form-status
+            hidden
+          ></p>
+        </form>
         <p class="text-sm text-slate-600" data-profile-status hidden></p>
       </section>
 

@@ -1,6 +1,12 @@
 /* eslint-env browser */
 
-import { getProfile, getStoredAuth } from "./shared/api.js";
+import {
+  emitAuthChanged,
+  getProfile,
+  getStoredAuth,
+  setStoredAuth,
+  updateProfileAvatar,
+} from "./shared/api.js";
 import { fallbackProfile } from "./shared/data.js";
 import { initPageChrome, renderCount } from "./shared/page.js";
 import { getAvailableCredits, setBaseCredits } from "./shared/credits.js";
@@ -17,6 +23,29 @@ const winCountElements = document.querySelectorAll("[data-profile-win-count]");
 const listingsContainer = document.querySelector("[data-profile-listings]");
 const winsContainer = document.querySelector("[data-profile-wins]");
 const statusElement = document.querySelector("[data-profile-status]");
+const avatarImage = document.querySelector("[data-profile-avatar-image]");
+const avatarEditTriggers = document.querySelectorAll(
+  "[data-avatar-edit-trigger]",
+);
+const avatarForm = document.querySelector("[data-avatar-form]");
+const avatarUrlInput = document.querySelector("[data-avatar-url-input]");
+const avatarAltInput = document.querySelector("[data-avatar-alt-input]");
+const avatarFormStatus = document.querySelector("[data-avatar-form-status]");
+const avatarFormSubmit = document.querySelector("[data-avatar-form-submit]");
+const avatarFormCancel = document.querySelector("[data-avatar-form-cancel]");
+const avatarFormClear = document.querySelector("[data-avatar-form-clear]");
+const avatarOverlayButtons = document.querySelectorAll("[data-avatar-overlay]");
+
+if (avatarImage) {
+  avatarImage.addEventListener("error", () => {
+    avatarImage.hidden = true;
+  });
+}
+
+if (avatarForm) {
+  avatarForm.hidden = true;
+  avatarForm.style.display = "none";
+}
 
 const params = new URLSearchParams(window.location.search);
 const auth = getStoredAuth();
@@ -54,6 +83,206 @@ const profileStatusToneClasses = {
   info: "text-slate-600",
   warning: "text-amber-600",
   error: "text-red-600",
+};
+const avatarStatusClasses = {
+  info: "rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-sm text-slate-600",
+  success:
+    "rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700",
+  error:
+    "rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700",
+};
+
+let activeProfile;
+let viewingOwnProfile = false;
+let avatarFormVisible = false;
+
+const toggleAvatarActions = (shouldShow) => {
+  avatarOverlayButtons.forEach((button) => {
+    if (button) {
+      button.hidden = !shouldShow;
+    }
+  });
+};
+
+const setAvatarStatus = (message, tone = "info") => {
+  if (!avatarFormStatus) {
+    return;
+  }
+
+  if (!message) {
+    avatarFormStatus.hidden = true;
+    avatarFormStatus.textContent = "";
+    avatarFormStatus.className = "text-sm";
+    return;
+  }
+
+  const toneKey = tone && avatarStatusClasses[tone] ? tone : "info";
+  avatarFormStatus.hidden = false;
+  avatarFormStatus.textContent = message;
+  avatarFormStatus.className = avatarStatusClasses[toneKey];
+};
+
+const setAvatarFormBusy = (busy) => {
+  if (!avatarForm) {
+    return;
+  }
+
+  const disabled = Boolean(busy);
+  avatarForm.dataset.submitting = disabled ? "true" : "false";
+
+  const elements = [
+    avatarUrlInput,
+    avatarAltInput,
+    avatarFormSubmit,
+    avatarFormCancel,
+    avatarFormClear,
+  ];
+
+  elements.forEach((element) => {
+    if (element) {
+      element.disabled = disabled;
+    }
+  });
+
+  avatarEditTriggers.forEach((trigger) => {
+    if (trigger) {
+      trigger.disabled = disabled;
+    }
+  });
+};
+
+const renderAvatarDisplay = (avatar, profile) => {
+  const url = typeof avatar?.url === "string" ? avatar.url.trim() : "";
+  const altText = typeof avatar?.alt === "string" ? avatar.alt.trim() : "";
+
+  if (!avatarImage) {
+    return;
+  }
+
+  if (url) {
+    avatarImage.src = url;
+    avatarImage.alt =
+      altText ||
+      (profile?.name ? `Avatar for ${profile.name}` : "Profile avatar");
+    avatarImage.hidden = false;
+    return;
+  }
+
+  avatarImage.removeAttribute("src");
+  avatarImage.alt = "";
+  avatarImage.hidden = true;
+};
+
+const populateAvatarForm = (profile) => {
+  if (!avatarForm) {
+    return;
+  }
+
+  const data = profile?.avatar;
+  if (avatarUrlInput) {
+    avatarUrlInput.value = data?.url ?? "";
+  }
+
+  if (avatarAltInput) {
+    avatarAltInput.value = data?.alt ?? "";
+  }
+};
+
+const showAvatarForm = () => {
+  if (!avatarForm || !viewingOwnProfile) {
+    return;
+  }
+
+  avatarForm.hidden = false;
+  avatarForm.style.display = "";
+  avatarFormVisible = true;
+  toggleAvatarActions(false);
+  setAvatarFormBusy(false);
+  populateAvatarForm(activeProfile);
+  setAvatarStatus("");
+
+  window.setTimeout(() => {
+    if (avatarUrlInput) {
+      avatarUrlInput.focus();
+      avatarUrlInput.select();
+    }
+  }, 0);
+};
+
+const hideAvatarForm = () => {
+  if (!avatarForm) {
+    return;
+  }
+
+  avatarForm.hidden = true;
+  avatarForm.style.display = "none";
+  avatarFormVisible = false;
+  setAvatarFormBusy(false);
+  setAvatarStatus("");
+  toggleAvatarActions(viewingOwnProfile);
+};
+
+const validateAvatarUrl = (value) => {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+};
+
+const normalizeAvatarPayload = (avatar) => {
+  if (typeof avatar === "string") {
+    const urlValue = avatar.trim();
+    return urlValue ? { url: urlValue, alt: "" } : null;
+  }
+
+  if (!avatar || typeof avatar !== "object") {
+    return null;
+  }
+
+  const url = typeof avatar.url === "string" ? avatar.url.trim() : "";
+  const alt = typeof avatar.alt === "string" ? avatar.alt.trim() : "";
+
+  if (!url) {
+    return null;
+  }
+
+  return { url, alt };
+};
+
+const syncStoredAuthAvatar = (avatar) => {
+  const authState = getStoredAuth();
+
+  if (!authState?.accessToken || !authState?.name) {
+    return;
+  }
+
+  if (!activeProfile?.name || authState.name !== activeProfile.name) {
+    return;
+  }
+
+  const nextAvatar = normalizeAvatarPayload(avatar);
+  const currentAvatar = normalizeAvatarPayload(authState.avatar);
+
+  const currentUrl = currentAvatar?.url ?? "";
+  const currentAlt = currentAvatar?.alt ?? "";
+  const nextUrl = nextAvatar?.url ?? "";
+  const nextAlt = nextAvatar?.alt ?? "";
+
+  if (currentUrl === nextUrl && currentAlt === nextAlt) {
+    return;
+  }
+
+  setStoredAuth({
+    ...authState,
+    avatar: nextAvatar,
+  });
+  emitAuthChanged();
 };
 
 const setStatus = (message, tone = "info") => {
@@ -325,11 +554,17 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
     return;
   }
 
+  const previousProfile = activeProfile;
+  const wasAvatarFormVisible = avatarFormVisible;
+
+  activeProfile = profile;
+
   assignText(nameElements, profile.name);
   if (profile.name && updateTitle) {
     document.title = `${profile.name} | Auction House`;
   }
   assignText(emailElements, profile.email);
+  renderAvatarDisplay(profile.avatar, profile);
 
   const rawCredits = Number(profile.credits ?? 0);
   const credits = Number.isFinite(rawCredits) ? rawCredits : 0;
@@ -347,8 +582,33 @@ const hydrateProfile = (profile, { updateTitle = true } = {}) => {
       ? currentAuth.name === profile.name
       : false;
 
+  viewingOwnProfile = isOwnProfile;
+
+  const avatarChanged =
+    wasAvatarFormVisible &&
+    previousProfile?.name === profile?.name &&
+    ((previousProfile?.avatar?.url ?? "") !== (profile?.avatar?.url ?? "") ||
+      (previousProfile?.avatar?.alt ?? "") !== (profile?.avatar?.alt ?? ""));
+
+  if (avatarChanged) {
+    hideAvatarForm();
+  }
+
+  if (!viewingOwnProfile) {
+    hideAvatarForm();
+  } else if (avatarFormVisible) {
+    populateAvatarForm(profile);
+  }
+
+  toggleAvatarActions(viewingOwnProfile && !avatarFormVisible);
+
   if (isOwnProfile) {
     setBaseCredits(credits, { reason: "Profile balance" });
+    syncStoredAuthAvatar(profile.avatar);
+  }
+
+  if (!isOwnProfile) {
+    setAvatarStatus("");
   }
 
   const availableForDisplay = isOwnProfile ? getAvailableCredits() : credits;
@@ -400,6 +660,124 @@ const loadProfile = async () => {
     hydrateProfile(fallbackProfile, { updateTitle: false });
   }
 };
+
+const handleAvatarSubmit = async (event) => {
+  event.preventDefault();
+
+  if (!viewingOwnProfile || !activeProfile?.name) {
+    setAvatarStatus("You can only change your own avatar.", "error");
+    return;
+  }
+
+  if (avatarForm?.dataset.submitting === "true") {
+    return;
+  }
+
+  const urlValue = avatarUrlInput ? avatarUrlInput.value.trim() : "";
+
+  if (!validateAvatarUrl(urlValue)) {
+    setAvatarStatus(
+      "Enter a valid image URL that starts with http:// or https://.",
+      "error",
+    );
+    return;
+  }
+
+  const altValue = avatarAltInput
+    ? avatarAltInput.value.trim()
+    : typeof activeProfile?.avatar?.alt === "string"
+      ? activeProfile.avatar.alt.trim()
+      : "";
+
+  try {
+    setAvatarFormBusy(true);
+    setAvatarStatus("Saving avatar...", "info");
+    const response = await updateProfileAvatar(activeProfile.name, {
+      avatar: { url: urlValue, alt: altValue || null },
+    });
+    const updatedProfile = response?.data ?? null;
+    if (updatedProfile) {
+      hydrateProfile(updatedProfile, { updateTitle: false });
+    }
+    hideAvatarForm();
+  } catch (error) {
+    console.error(error);
+    setAvatarStatus(
+      error.message || "Unable to update avatar. Please try again.",
+      "error",
+    );
+  } finally {
+    setAvatarFormBusy(false);
+  }
+};
+
+const handleAvatarCancel = (event) => {
+  event.preventDefault();
+  hideAvatarForm();
+};
+
+const handleAvatarEdit = (event) => {
+  event.preventDefault();
+
+  if (!viewingOwnProfile) {
+    return;
+  }
+
+  if (avatarFormVisible) {
+    hideAvatarForm();
+    return;
+  }
+
+  showAvatarForm();
+};
+
+const handleAvatarClear = async (event) => {
+  event.preventDefault();
+
+  if (!viewingOwnProfile || !activeProfile?.name) {
+    return;
+  }
+
+  if (avatarForm?.dataset.submitting === "true") {
+    return;
+  }
+
+  try {
+    setAvatarFormBusy(true);
+    setAvatarStatus("Removing avatar...", "info");
+    const response = await updateProfileAvatar(activeProfile.name, {
+      avatar: null,
+    });
+    const updatedProfile = response?.data ?? null;
+    if (updatedProfile) {
+      hydrateProfile(updatedProfile, { updateTitle: false });
+    }
+    hideAvatarForm();
+  } catch (error) {
+    console.error(error);
+    setAvatarStatus(
+      error.message || "Unable to remove avatar. Please try again.",
+      "error",
+    );
+  } finally {
+    setAvatarFormBusy(false);
+  }
+};
+
+if (avatarForm) {
+  avatarForm.addEventListener("submit", handleAvatarSubmit);
+}
+if (avatarFormCancel) {
+  avatarFormCancel.addEventListener("click", handleAvatarCancel);
+}
+if (avatarEditTriggers.length) {
+  avatarEditTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", handleAvatarEdit);
+  });
+}
+if (avatarFormClear) {
+  avatarFormClear.addEventListener("click", handleAvatarClear);
+}
 
 loadProfile();
 
