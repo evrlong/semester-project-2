@@ -141,13 +141,18 @@
               required
             />
           </label>
-          <label class="flex items-center gap-2 text-sm text-slate-600">
+          <label>
+            <span class="mb-2 block text-sm font-semibold text-slate-700"
+              >Confirm password</span
+            >
             <input
-              type="checkbox"
-              name="venueManager"
-              class="h-4 w-4 rounded border-slate-300 text-[#3A2440] focus:ring-[#CDB4DB]"
+              class="form-control w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm"
+              type="password"
+              name="confirmPassword"
+              autocomplete="new-password"
+              minlength="8"
+              required
             />
-            <span>I want to manage venues</span>
           </label>
           <button type="submit" class="btn-primary">Register</button>
         </form>

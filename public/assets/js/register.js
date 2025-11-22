@@ -1,6 +1,13 @@
 /* eslint-env browser */
 
-import { registerUser } from "./shared/api.js";
+import {
+  emitAuthChanged,
+  getProfile,
+  loginUser,
+  registerUser,
+  setStoredAuth,
+} from "./shared/api.js";
+import { setBaseCredits } from "./shared/credits.js";
 import { initPageChrome } from "./shared/page.js";
 
 const teardown = initPageChrome();
@@ -41,12 +48,19 @@ if (form) {
     const name = String(formData.get("name") ?? "").trim();
     const email = String(formData.get("email") ?? "").trim();
     const password = String(formData.get("password") ?? "");
-    const venueManager = formData.get("venueManager") === "on";
+    const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
     if (!name || !email || password.length < 8) {
       status.hidden = false;
       status.textContent =
         "Provide a name, Noroff email, and a password with at least 8 characters.";
+      status.className = formStatusClasses.error;
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      status.hidden = false;
+      status.textContent = "Passwords must match.";
       status.className = formStatusClasses.error;
       return;
     }
@@ -62,19 +76,50 @@ if (form) {
     try {
       form.dataset.submitting = "true";
       status.hidden = false;
-      status.textContent = "Creating your account…";
+      status.textContent = "Creating your account...";
       status.className = formStatusClasses.info;
 
       await registerUser({
         name,
         email,
         password,
-        venueManager,
       });
 
-      status.textContent = "Account created! You can now log in.";
+      status.textContent = "Account created! Signing you in...";
+      status.className = formStatusClasses.info;
+
+      const loginResponse = await loginUser({ email, password });
+      const auth = loginResponse?.data;
+
+      if (!auth?.accessToken) {
+        throw new Error("Registration succeeded but login failed.");
+      }
+
+      setStoredAuth(auth);
+      emitAuthChanged();
+
+      try {
+        const profileResponse = await getProfile(auth.name, {});
+        const profile = profileResponse?.data;
+        if (profile) {
+          const creditValue = Number(profile.credits ?? auth.credits ?? 0);
+          const credits = Number.isFinite(creditValue)
+            ? creditValue
+            : auth.credits;
+          setBaseCredits(credits, { reason: "Synced after registration" });
+        }
+      } catch (profileError) {
+        console.warn(
+          "Unable to fetch profile after registration",
+          profileError,
+        );
+      }
+
+      status.textContent = "All set! Redirecting to home...";
       status.className = formStatusClasses.success;
-      form.reset();
+      window.setTimeout(() => {
+        window.location.href = "./index.html";
+      }, 600);
     } catch (error) {
       console.error(error);
       status.hidden = false;
