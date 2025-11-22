@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Style Guide | Auction House</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/theme.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <header class="w-full border-b border-slate-200 bg-[#3A2440] backdrop-blur">
+      <div
+        class="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between"
+      >
+        <div class="flex w-full items-center justify-between gap-4 md:w-auto">
+          <a
+            class="text-sm font-semibold uppercase tracking-[0.2em] text-white"
+            href="./index.html"
+            >Auction House</a
+          >
+          <button
+            class="nav-toggle md:hidden"
+            type="button"
+            data-nav-toggle
+            aria-expanded="false"
+            aria-controls="primary-navigation"
+          >
+            <span class="sr-only">Toggle navigation</span>
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+        <nav
+          id="primary-navigation"
+          data-nav
+          aria-label="Main navigation"
+          class="hidden w-full flex-col gap-3 md:flex md:w-auto md:flex-row md:items-center md:gap-3"
+        >
+          <ul
+            class="m-0 flex list-none flex-col gap-3 p-0 md:flex-row md:items-center md:gap-3"
+          >
+            <li data-auth="signed-in" hidden>
+              <span class="badge-credits" data-user-credits></span>
+            </li>
+            <li>
+              <a class="nav-link" href="./index.html">Home</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a class="nav-link" href="./createListing.html">Create listing</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <a class="nav-link" href="./profile.html" data-profile-link
+                >My profile</a
+              >
+            </li>
+            <li data-auth="signed-out">
+              <a class="nav-link" href="./register.html">Register</a>
+            </li>
+            <li data-auth="signed-out">
+              <a class="nav-link" href="./login.html">Log in</a>
+            </li>
+            <li data-auth="signed-in" hidden>
+              <button
+                class="nav-link nav-link--ghost"
+                type="button"
+                data-logout
+              >
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main
+      class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-6 py-10"
+    >
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+        >
+          Design system
+        </p>
+        <div
+          class="mt-3 flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+        >
+          <div class="max-w-2xl">
+            <h1 class="text-3xl font-semibold text-slate-900 md:text-4xl">
+              Auction House style guide
+            </h1>
+            <p class="mt-3 text-base text-slate-600">
+              A single source of truth for colors, typography, components, and
+              interaction patterns across the marketplace experience. Use this
+              page before shipping a new view or updating an existing one.
+            </p>
+          </div>
+          <div
+            class="grid grid-cols-2 gap-4 text-left text-sm text-slate-600 sm:grid-cols-4"
+          >
+            <div class="rounded-xl bg-slate-50 px-4 py-3">
+              <p class="text-xs uppercase tracking-wide text-slate-500">
+                Core stack
+              </p>
+              <p class="mt-1 font-semibold text-slate-900">
+                Tailwind + theme.css
+              </p>
+            </div>
+            <div class="rounded-xl bg-slate-50 px-4 py-3">
+              <p class="text-xs uppercase tracking-wide text-slate-500">
+                Typography
+              </p>
+              <p class="mt-1 font-semibold text-slate-900">
+                Inter / system sans
+              </p>
+            </div>
+            <div class="rounded-xl bg-slate-50 px-4 py-3">
+              <p class="text-xs uppercase tracking-wide text-slate-500">
+                Radius
+              </p>
+              <p class="mt-1 font-semibold text-slate-900">
+                12px / 20px surfaces
+              </p>
+            </div>
+            <div class="rounded-xl bg-slate-50 px-4 py-3">
+              <p class="text-xs uppercase tracking-wide text-slate-500">
+                Shadow
+              </p>
+              <p class="mt-1 font-semibold text-slate-900">Soft layered glow</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        aria-labelledby="components-title"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:items-center">
+          <div class="flex-1">
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+            >
+              Components
+            </p>
+            <h2
+              id="components-title"
+              class="text-2xl font-semibold text-slate-900"
+            >
+              Example assemblies for listings & empty states
+            </h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Combine the primitives above to create cards, badges, and support
+              panels. Keep borders subtle and rely on spacing for structure.
+            </p>
+          </div>
+          <div class="text-sm text-slate-500 md:w-64">
+            Cards should never exceed 360px width before stacking into a grid.
+          </div>
+        </div>
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+          <article
+            class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p
+                  class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500"
+                >
+                  Featured lot
+                </p>
+                <h3 class="mt-2 text-xl font-semibold text-slate-900">
+                  Mid-century pet bed
+                </h3>
+                <p class="mt-1 text-sm text-slate-600">
+                  Handwoven rattan with brass accents &mdash; includes custom
+                  cushion.
+                </p>
+              </div>
+              <span
+                class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700"
+                >Live</span
+              >
+            </div>
+            <dl class="mt-4 grid grid-cols-2 gap-4 text-sm text-slate-600">
+              <div>
+                <dt class="text-xs uppercase tracking-wide text-slate-500">
+                  Highest bid
+                </dt>
+                <dd class="mt-1 text-base font-semibold text-slate-900">
+                  200 credits
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs uppercase tracking-wide text-slate-500">
+                  Ends in
+                </dt>
+                <dd class="mt-1 text-base font-semibold text-slate-900">
+                  02h 16m
+                </dd>
+              </div>
+            </dl>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button type="button" class="btn-primary">Place bid</button>
+              <button type="button" class="btn-secondary">View listing</button>
+            </div>
+          </article>
+          <article
+            class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center"
+          >
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500"
+            >
+              Empty state
+            </p>
+            <h3 class="mt-3 text-xl font-semibold text-slate-900">
+              No saved auctions yet
+            </h3>
+            <p class="mt-2 max-w-sm text-sm text-slate-600">
+              Encourage action with a short explanation and a primary button.
+              Optional secondary links can point to help docs.
+            </p>
+            <div class="mt-5 flex flex-wrap justify-center gap-3">
+              <a class="btn-primary" href="./index.html">Browse listings</a>
+              <a class="btn-tertiary" href="./createListing.html">Create one</a>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        aria-labelledby="forms-title"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:items-center">
+          <div class="flex-1">
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+            >
+              Form controls
+            </p>
+            <h2 id="forms-title" class="text-2xl font-semibold text-slate-900">
+              Inputs with helper messaging and validation
+            </h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Pair every field with a clear label, optional supporting text, and
+              inline error handling. Focus rings come for free via the existing
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                >form-control</code
+              >
+              utility.
+            </p>
+          </div>
+          <div class="text-sm text-slate-500 md:w-64">
+            Error copy should explain how to recover, not just what went wrong.
+          </div>
+        </div>
+        <form class="mt-6 grid gap-5 md:grid-cols-2" action="#">
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-semibold text-slate-700">
+              Listing title
+            </span>
+            <input
+              type="text"
+              name="title"
+              class="form-control rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm"
+              placeholder="Vintage collar set"
+            />
+            <span class="text-xs text-slate-500">
+              Keep titles under 60 characters for best truncation.
+            </span>
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-semibold text-slate-700"> Category </span>
+            <select
+              name="category"
+              class="form-control rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm"
+            >
+              <option>Accessories</option>
+              <option>Toys</option>
+              <option>Portraits</option>
+            </select>
+            <span class="text-xs text-slate-500">
+              Categories drive search filters on the homepage.
+            </span>
+          </label>
+          <label class="flex flex-col gap-2 md:col-span-2">
+            <span class="text-sm font-semibold text-slate-700">
+              Description
+            </span>
+            <textarea
+              name="description"
+              rows="4"
+              class="form-control rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm"
+              placeholder="Include dimensions, materials, and provenance."
+            ></textarea>
+            <span class="text-xs text-slate-500">
+              Aim for 2&ndash;3 short paragraphs. Break long content with bullet
+              lists using
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                >list-disc</code
+              >.
+            </span>
+          </label>
+          <label class="flex flex-col gap-2 md:col-span-2">
+            <span class="text-sm font-semibold text-slate-700">
+              Reserve price
+            </span>
+            <div class="flex flex-col gap-2">
+              <input
+                type="number"
+                name="price"
+                min="0"
+                step="10"
+                value="150"
+                class="form-control rounded-lg border border-rose-300 bg-white px-3 py-2 text-base shadow-sm"
+                aria-invalid="true"
+              />
+              <span class="text-xs text-rose-600">
+                Needs to be higher than your current bid (200 credits).
+              </span>
+            </div>
+          </label>
+        </form>
+      </section>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        aria-labelledby="actions-title"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:items-center">
+          <div class="flex-1">
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+            >
+              Buttons & links
+            </p>
+            <h2
+              id="actions-title"
+              class="text-2xl font-semibold text-slate-900"
+            >
+              Four action tiers with clear intent
+            </h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Use the semantic button classes defined in
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                >theme.css</code
+              >
+              to avoid rebuilding paddings, corners, or focus rings.
+            </p>
+          </div>
+          <div class="text-sm text-slate-500 md:w-64">
+            When a view only exposes one action, default to the primary button.
+            Never place two primary buttons side-by-side.
+          </div>
+        </div>
+        <div class="mt-6 space-y-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" class="btn-primary">Primary action</button>
+            <button type="button" class="btn-secondary">
+              Secondary action
+            </button>
+            <button type="button" class="btn-tertiary">Ghost / inline</button>
+            <button type="button" class="btn-danger">Danger</button>
+            <button type="button" class="btn-primary" disabled>Disabled</button>
+          </div>
+          <p class="text-sm text-slate-600">
+            Pair buttons with descriptive verbs (“Create listing”) and optional
+            helper text below when destructive.
+          </p>
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+              <p class="text-sm font-semibold text-slate-900">Link pattern</p>
+              <p class="mt-2 text-sm text-slate-600">
+                Inline links use
+                <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                  >text-[#3A2440]</code
+                >
+                + underline on hover. Navigation pills keep uppercase text with
+                <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                  >nav-link</code
+                >
+                styles.
+              </p>
+            </div>
+            <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+              <p class="text-sm font-semibold text-slate-900">
+                Icon + text alignment
+              </p>
+              <p class="mt-2 text-sm text-slate-600">
+                Wrap icons inside a flex container with
+                <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                  >gap-2</code
+                >
+                so the hit target grows with the label.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        aria-labelledby="spacing-title"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:items-center">
+          <div class="flex-1">
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+            >
+              Layout
+            </p>
+            <h2
+              id="spacing-title"
+              class="text-2xl font-semibold text-slate-900"
+            >
+              Spacing, grid, and elevation guidance
+            </h2>
+            <p class="mt-2 text-sm text-slate-600">
+              The product breathes thanks to generous white space and rounded
+              corners. Anchor pages inside a max-width of 80rem, then center
+              with
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                >mx-auto</code
+              >
+              and responsive padding (
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">px-6</code>
+              on mobile).
+            </p>
+          </div>
+          <div class="text-sm text-slate-500 md:w-72">
+            Stack content using multiples of 8px. Cards use
+            <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">gap-6</code>
+            inside while sections rely on
+            <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">py-10</code>
+            to match the hero rhythm.
+          </div>
+        </div>
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-5">
+            <p class="text-sm font-semibold text-slate-900">
+              Spacing scale (px)
+            </p>
+            <div class="mt-4 flex items-end gap-4">
+              <div class="text-center">
+                <div class="mx-auto h-6 w-6 rounded-md bg-slate-200"></div>
+                <p class="mt-2 text-xs font-medium text-slate-500">
+                  8 / 0.5rem
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="mx-auto h-10 w-10 rounded-md bg-slate-200"></div>
+                <p class="mt-2 text-xs font-medium text-slate-500">16 / 1rem</p>
+              </div>
+              <div class="text-center">
+                <div class="mx-auto h-14 w-14 rounded-md bg-slate-200"></div>
+                <p class="mt-2 text-xs font-medium text-slate-500">
+                  24 / 1.5rem
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-md bg-slate-200"></div>
+                <p class="mt-2 text-xs font-medium text-slate-500">32 / 2rem</p>
+              </div>
+              <div class="text-center">
+                <div class="mx-auto h-20 w-20 rounded-md bg-slate-200"></div>
+                <p class="mt-2 text-xs font-medium text-slate-500">
+                  40 / 2.5rem
+                </p>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-slate-600">
+              Choose the smallest token that communicates hierarchy. Avoid
+              single 4px increments unless aligning icons.
+            </p>
+          </div>
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-5">
+            <p class="text-sm font-semibold text-slate-900">
+              Radius & elevation
+            </p>
+            <div class="mt-4 space-y-4">
+              <div
+                class="rounded-2xl border border-white bg-white p-4 shadow-sm"
+              >
+                <p class="text-sm font-semibold text-slate-900">
+                  Section cards
+                </p>
+                <p class="text-sm text-slate-600">
+                  <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                    >rounded-2xl</code
+                  >
+                  +
+                  <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                    >shadow-sm</code
+                  >
+                  + subtle border maintain separation without heavy outlines.
+                </p>
+              </div>
+              <div
+                class="rounded-xl border border-white bg-white/80 p-4 shadow-lg backdrop-blur"
+              >
+                <p class="text-sm font-semibold text-slate-900">
+                  Floating panels
+                </p>
+                <p class="text-sm text-slate-600">
+                  Use translucency + blur for overlays or dialogs. Keep blur
+                  subtle (
+                  <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                    >backdrop-blur</code
+                  >
+                  ) to retain depth.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        aria-labelledby="typography-title"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+        >
+          Typography
+        </p>
+        <div class="mt-2 flex flex-col gap-4 md:flex-row md:items-start">
+          <div class="flex-1">
+            <h2
+              id="typography-title"
+              class="text-2xl font-semibold text-slate-900"
+            >
+              Consistent scale for product UI and marketing blocks
+            </h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Inter sits on the Tailwind sans stack. The base size is 16px
+              (1rem) with a vertical rhythm of 1.625. Reduce optical clutter by
+              limiting yourself to these headline tiers.
+            </p>
+          </div>
+          <p class="text-sm text-slate-500 md:w-60">
+            Tracking for eyebrows uses 0.3em. Tighten hero headings with -0.01em
+            letter-spacing when they exceed 32 characters.
+          </p>
+        </div>
+        <div class="mt-6 space-y-6">
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500"
+            >
+              Display / H1 · 32–40px · 600
+            </p>
+            <p class="mt-2 text-3xl font-semibold text-slate-900 md:text-4xl">
+              Find your next auction
+            </p>
+            <p class="mt-1 text-sm text-slate-500">
+              Use for hero intros and the first heading in a page.
+            </p>
+          </div>
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Section heading · 24px · 600
+            </p>
+            <p class="mt-2 text-2xl font-semibold text-slate-900">
+              Upcoming live auctions
+            </p>
+            <p class="mt-1 text-sm text-slate-500">
+              Ideal for grouping cards or tabs inside dashboards.
+            </p>
+          </div>
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Body copy · 16px · 400
+            </p>
+            <p class="mt-2 text-base text-slate-600">
+              Body paragraphs sit at 16px with 1.625 line-height. Add
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                >text-sm</code
+              >
+              modifiers for captions or helper text.
+            </p>
+          </div>
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500"
+            >
+              Eyebrow & micro copy · 12px · 600
+            </p>
+            <p
+              class="mt-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600"
+            >
+              ACTIVE LOT · 12 BIDS
+            </p>
+            <p class="mt-1 text-sm text-slate-500">
+              Apply to supporting metadata and badges to create hierarchy.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        aria-labelledby="color-palette-title"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:items-center">
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.3em] text-[#3A2440]"
+            >
+              Palette
+            </p>
+            <h2
+              id="color-palette-title"
+              class="text-2xl font-semibold text-slate-900"
+            >
+              Brand colors & supporting neutrals
+            </h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Stick to these six swatches whenever you add content, cards, or
+              illustration tints. Tints live in CSS variables inside
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-xs"
+                >theme.css</code
+              >.
+            </p>
+          </div>
+          <p class="text-sm text-slate-500 md:ml-auto md:text-right">
+            Reserve saturated tones for CTAs and data visualization accents.
+            Surface backgrounds should stay light for readability.
+          </p>
+        </div>
+        <div
+          class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          role="list"
+          aria-label="Color tokens"
+        >
+          <article
+            class="rounded-xl border border-slate-100 bg-slate-50 p-5"
+            role="listitem"
+          >
+            <div
+              class="h-20 w-full rounded-lg border border-slate-100 bg-[#3A2440]"
+            ></div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="font-semibold text-slate-900">Plum 500</p>
+              <p class="font-mono text-xs text-slate-500">#3A2440</p>
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              Primary brand color for CTA buttons, header, and hero accents.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-slate-100 bg-slate-50 p-5"
+            role="listitem"
+          >
+            <div
+              class="h-20 w-full rounded-lg border border-slate-100 bg-[#4C3057]"
+            ></div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="font-semibold text-slate-900">Plum 400</p>
+              <p class="font-mono text-xs text-slate-500">#4C3057</p>
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              Hover states and elevated cards, plus subtle gradients.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-slate-100 bg-slate-50 p-5"
+            role="listitem"
+          >
+            <div
+              class="h-20 w-full rounded-lg border border-slate-100 bg-[#CDB4DB]"
+            ></div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="font-semibold text-slate-900">Lavender 300</p>
+              <p class="font-mono text-xs text-slate-500">#CDB4DB</p>
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              Focus rings, support cards, and light badge fills.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-slate-100 bg-slate-50 p-5"
+            role="listitem"
+          >
+            <div
+              class="h-20 w-full rounded-lg border border-slate-100 bg-[#E9D8F2]"
+            ></div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="font-semibold text-slate-900">Lavender 200</p>
+              <p class="font-mono text-xs text-slate-500">#E9D8F2</p>
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              Secondary button hover, soft backgrounds, and tags.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-slate-100 bg-slate-50 p-5"
+            role="listitem"
+          >
+            <div
+              class="h-20 w-full rounded-lg border border-slate-100 bg-[#0F172A]"
+            ></div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="font-semibold text-slate-900">Slate ink 900</p>
+              <p class="font-mono text-xs text-slate-500">#0F172A</p>
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              Core typography color for high-contrast copy.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-slate-100 bg-slate-50 p-5"
+            role="listitem"
+          >
+            <div
+              class="h-20 w-full rounded-lg border border-slate-100 bg-[#F1F5F9]"
+            ></div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="font-semibold text-slate-900">Slate mist 100</p>
+              <p class="font-mono text-xs text-slate-500">#F1F5F9</p>
+            </div>
+            <p class="mt-2 text-sm text-slate-600">
+              Page background and neutral containers. Use at 100% opacity.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-[#2C1831] text-slate-200">
+      <div class="mx-auto w-full max-w-5xl px-6 py-10">
+        <div
+          class="flex flex-col items-center gap-8 text-center text-sm md:flex-row md:items-center md:justify-between"
+        >
+          <div
+            class="order-4 text-xs text-slate-400 md:order-1 md:text-sm md:text-left md:self-stretch md:flex md:items-center"
+          >
+            <p>
+              &copy; <span data-year></span> AuctionHub Ltd. All rights
+              reserved.
+            </p>
+          </div>
+          <div
+            class="order-1 flex flex-col items-center gap-8 md:order-2 md:ml-auto md:flex-row md:items-start md:gap-12 md:text-left"
+          >
+            <div class="flex flex-col items-center gap-2 md:items-start">
+              <h3 class="text-sm font-semibold text-white md:text-base">
+                Navigation
+              </h3>
+              <a class="transition hover:text-white" href="./index.html"
+                >Home</a
+              >
+              <a class="transition hover:text-white" href="./createListing.html"
+                >Create listing</a
+              >
+              <a
+                class="transition hover:text-white"
+                href="./profile.html"
+                data-profile-link
+                >My profile</a
+              >
+            </div>
+            <div class="flex flex-col items-center gap-2 md:items-start">
+              <h3 class="text-sm font-semibold text-white md:text-base">
+                Email
+              </h3>
+              <a
+                class="transition hover:text-white"
+                href="mailto:contact@auctionhub.example.com"
+                >contact@auctionhub.example.com</a
+              >
+            </div>
+            <div class="flex flex-col items-center gap-2 md:items-start">
+              <h3 class="text-sm font-semibold text-white md:text-base">
+                Get in touch
+              </h3>
+              <p>AuctionHub Ltd.</p>
+              <p>742 Evergreen Plaza, Suite 900</p>
+              <p>Grandchester, Westland 48392</p>
+              <p>United Kingdom</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="./assets/js/index.js"></script>
+  </body>
+</html>
