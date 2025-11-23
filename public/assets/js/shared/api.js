@@ -225,7 +225,7 @@ export const getProfileWins = (name, params) =>
   );
 
 export const updateProfileAvatar = (name, payload) =>
-  request(`/auction/profiles/${encodeURIComponent(name)}/media`, {
+  request(`/auction/profiles/${encodeURIComponent(name)}`, {
     method: "PUT",
     body: payload,
     requireAuth: true,
