@@ -699,6 +699,7 @@ const handleAvatarSubmit = async (event) => {
     if (updatedProfile) {
       hydrateProfile(updatedProfile, { updateTitle: false });
     }
+    await loadProfile();
     hideAvatarForm();
   } catch (error) {
     console.error(error);
@@ -752,6 +753,7 @@ const handleAvatarClear = async (event) => {
     if (updatedProfile) {
       hydrateProfile(updatedProfile, { updateTitle: false });
     }
+    await loadProfile();
     hideAvatarForm();
   } catch (error) {
     console.error(error);
